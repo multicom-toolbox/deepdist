@@ -1,0 +1,23 @@
+## FLAG path of DeepDist database commone folder
+DeepDist_db_dir=/data/casp14/com_db_tools/
+
+## FLAG path of DeepDist database 
+uniref90_version=uniref90_01_2020
+metaclust50_version=Metaclust_2018_06
+hhsuitedb_version=UniRef30_2020_01
+ebi_uniref100_version=myg_uniref100_01_2020
+
+## path of runfile script
+DeepDist_run_file =/lib
+
+## path of evalu_ensemble script
+DeepDist_evalu_ensemble=/predictors/ensemble
+
+## path of pred_ensemble script
+DeepDist_pred_ensemble=/predictors/ensemble
+
+## path of evalu_individual script
+DeepDist_evalu_individual=/predictors/individual
+
+## path of pred_individual script
+DeepDist_pred_individual=/predictors/individual

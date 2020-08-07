@@ -1,0 +1,2 @@
+domain 0:1-44 hard
+domain 1:45-183 easy 

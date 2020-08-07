@@ -1,0 +1,28 @@
+#install python3.6
+# Centos 7
+yum install https://centos7.iuscommunity.org/ius-release.rpm -y
+yum install python36u -y
+ln -s /usr/bin/python3.6 /bin/python3
+yum install python36u-pip -y
+ln -s /usr/bin/pip3.6 /bin/pip3
+pip3 install --upgrade pip
+#check pyvenv
+
+#1
+#install gcc4.9.2
+rm /usr/lib64/libstdc++.so.6
+ln -s /usr/local/lib64/libstdc++.so.6.0.20 /usr/lib64/libstdc++.so.6
+
+#2
+sudo cp/exports/store2/casp14/tools/commons/lib/libstdc++.so.6.0.19 /usr/lib64 
+cd /usr/lib64
+rm /usr/lib64/libstdc++.so.6
+ln -s /usr/local/lib64/libstdc++.so.6.0.19 /usr/lib64/libstdc++.so.6
+
+wget https://ftp.gnu.org/gnu/glibc/glibc-2.17.tar.gz
+tar -xvf glibc-2.17.tar.gz
+cd glibc-2.17
+mkdir build
+cd build
+../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+make && make install
