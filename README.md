@@ -4,7 +4,7 @@ Deep learning prediction of protein distance map via multi-classification and re
 **(1) Download DeepDist system package (short path is recommended)**
 
 ```
-git clone https://github.com/jianlin-cheng/deepdist.git
+git clone git@github.com:multicom-toolbox/deepdist.git
 
 cd deepdist
 ```
@@ -28,6 +28,8 @@ if on ubuntu system, please run below command first
 python setup.py
 
 python configure.py
+
+sh installation/set_env.sh
 ```
 
 **(4) Predict the deepdist model (single target, input fasta (should user change the fasta in shell file), ouput rr file**
