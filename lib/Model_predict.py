@@ -24,12 +24,102 @@ import tensorflow as tf
 from keras.engine.topology import Layer
 from keras import metrics, initializers
 
+def is_dir(dirname):
+    """Checks if a path is an actual directory"""
+    if not os.path.isdir(dirname):
+        msg = "{0} is not a directory".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return dirname
+
+def is_file(filename):
+    """Checks if a file is an invalid file"""
+    if not os.path.exists(filename):
+        msg = "{0} doesn't exist".format(filename)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return filename
+
+def chkdirs(fn):
+    '''create folder if not exists'''
+    dn = os.path.dirname(fn)
+    if not os.path.exists(dn): os.makedirs(dn)
+
+def getFileName(path, filetype):
+    f_list = os.listdir(path)
+    all_file = []
+    for i in f_list:
+        if os.path.splitext(i)[1] == filetype:
+            all_file.append(i)
+    return all_file
+
+class InstanceNormalization(Layer):
+    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
+        super(InstanceNormalization, self).__init__(**kwargs)
+        self.axis = axis
+        self.epsilon = epsilon
+
+    def build(self, input_shape):
+        dim = input_shape[self.axis]
+        if dim is None:
+            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+        shape = (dim,)
+
+        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
+        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
+        self.built = True
+
+    def call(self, inputs, training=None):
+        mean, var = tf.nn.moments(inputs, axes=[1,2], keep_dims=True)
+        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
+
+class RowNormalization(Layer):
+    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
+        super(RowNormalization, self).__init__(**kwargs)
+        self.axis = axis
+        self.epsilon = epsilon
+
+    def build(self, input_shape):
+        dim = input_shape[self.axis]
+        if dim is None:
+            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+        shape = (dim,)
+
+        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
+        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
+        self.built = True
+
+    def call(self, inputs, training=None):
+        mean, var = tf.nn.moments(inputs, axes=[1], keep_dims=True)
+        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
+
+class ColumNormalization(Layer):
+    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
+        super(ColumNormalization, self).__init__(**kwargs)
+        self.axis = axis
+        self.epsilon = epsilon
+
+    def build(self, input_shape):
+        dim = input_shape[self.axis]
+        if dim is None:
+            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+        shape = (dim,)
+
+        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
+        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
+        self.built = True
+
+    def call(self, inputs, training=None):
+        mean, var = tf.nn.moments(inputs, axes=[2], keep_dims=True)
+        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
+
 #DATABASE_FLAG
 uniref90_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/uniref90_01_2020'
 metaclust50_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/Metaclust_2018_06'
 hhsuitedb_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/UniRef30_2020_01'
 ebi_uniref100_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/myg_uniref100_01_2020'
 #######end of configure
+
 
 if len(sys.argv) == 11:
     db_tool_dir = os.path.abspath(sys.argv[1])
@@ -51,7 +141,6 @@ else:
     print('please input the right parameters\n')
     print("[db_tool_dir] [fasta_file] [model_dir] [output_dir] [predict_method]")
     sys.exit(1)
-
 
 print("Model dir:", CV_dir)
 print("predict method:", predict_method)
@@ -152,78 +241,6 @@ else:
 ##########
 
 # gpu_schedul_strategy("local", allow_growth=True)
-
-def chkdirs(fn):
-    dn = os.path.dirname(fn)
-    if not os.path.exists(dn): os.makedirs(dn)
-
-def getFileName(path, filetype):
-    f_list = os.listdir(path)
-    all_file = []
-    for i in f_list:
-        if os.path.splitext(i)[1] == filetype:
-            all_file.append(i)
-    return all_file
-
-class InstanceNormalization(Layer):
-    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
-        super(InstanceNormalization, self).__init__(**kwargs)
-        self.axis = axis
-        self.epsilon = epsilon
-
-    def build(self, input_shape):
-        dim = input_shape[self.axis]
-        if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
-        shape = (dim,)
-
-        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
-        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
-        self.built = True
-
-    def call(self, inputs, training=None):
-        mean, var = tf.nn.moments(inputs, axes=[1,2], keep_dims=True)
-        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
-
-class RowNormalization(Layer):
-    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
-        super(RowNormalization, self).__init__(**kwargs)
-        self.axis = axis
-        self.epsilon = epsilon
-
-    def build(self, input_shape):
-        dim = input_shape[self.axis]
-        if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
-        shape = (dim,)
-
-        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
-        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
-        self.built = True
-
-    def call(self, inputs, training=None):
-        mean, var = tf.nn.moments(inputs, axes=[1], keep_dims=True)
-        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
-
-class ColumNormalization(Layer):
-    def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
-        super(ColumNormalization, self).__init__(**kwargs)
-        self.axis = axis
-        self.epsilon = epsilon
-
-    def build(self, input_shape):
-        dim = input_shape[self.axis]
-        if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
-        shape = (dim,)
-
-        self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
-        self.beta = self.add_weight(shape=shape, name='beta', initializer='zeros')
-        self.built = True
-
-    def call(self, inputs, training=None):
-        mean, var = tf.nn.moments(inputs, axes=[2], keep_dims=True)
-        return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
 
 print("\n######################################\n佛祖保佑，永不迨机，永无bug，精度九十九\n######################################\n")
 

@@ -86,6 +86,8 @@ def cut_domain_fasta(fasta_name, outdir, dm_index_file):
 def combine_dm_fl(full_length_dir, domain_dir_dict, dm_name_dict, serve_name, method = 'mul_lable_R'):
 	if 'R' in method:
 		mul_thred = [0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 14.5, 15.0, 15.0, 15.1]
+	elif 'C' in method:
+		mul_thred = [0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 18.0]
 
 	if serve_name == None:
 		fl_map_folder = full_length_dir + '/ensemble/'
@@ -184,6 +186,9 @@ def combine_dm_fl(full_length_dir, domain_dir_dict, dm_name_dict, serve_name, me
 			if C == 25:
 				enmpty_map_bin = enmpty_map[:,:, :, 0:8].sum(axis=-1)
 				full_map_bin = full_map[:,:, :, 0:8].sum(axis=-1)
+			elif C == 10:
+				enmpty_map_bin = enmpty_map[:,:, :, 0:3].sum(axis=-1)
+				full_map_bin = full_map[:,:, :, 0:3].sum(axis=-1)
 
 
 			full_map[enmpty_map_bin > full_map_bin, :] = enmpty_map [enmpty_map_bin > full_map_bin, :]
@@ -272,6 +277,9 @@ def combine_dm_fl(full_length_dir, domain_dir_dict, dm_name_dict, serve_name, me
 			if len(mul_thred) == 25:
 				bin_from_mul = mul_class[0,:, :, 0:8].sum(axis=-1).reshape(L, L)
 				score = mul_class[0,:, :, 0:22].sum(axis=-1).reshape(L, L)
+			elif len(mul_thred) == 10:
+				bin_from_mul = mul_class[0,:, :, 0:3].sum(axis=-1).reshape(L, L)
+				score = mul_class[0,:, :, 0:7].sum(axis=-1).reshape(L, L)
 
 			np.savetxt(dist_sum_map, dist_from_mulclass, fmt='%.4f')
 			np.savetxt(dev_file, mul_class_dev, fmt='%.4f')
@@ -296,6 +304,8 @@ def ensemble_aln_msa(fasta_name, outdir, serve_name, method = 'mul_lable_R'):
 	chkdirs(ensemble_dir)
 	if 'R' in method:
 		mul_thred = [0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 14.5, 15.0, 15.0, 15.1]
+	elif 'C' in method:
+		mul_thred = [0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 18.0]
 
 	if 'mul_lable' in method:
 		ensemble_rd_dir =  '/pred_map_ensem/'
@@ -382,6 +392,9 @@ def ensemble_aln_msa(fasta_name, outdir, serve_name, method = 'mul_lable_R'):
 		if len(mul_thred) == 25:
 			bin_from_mul = mul_class[0,:, :, 0:8].sum(axis=-1).reshape(L, L)
 			score = mul_class[0,:, :, 0:22].sum(axis=-1).reshape(L, L)
+		elif len(mul_thred) == 10:
+			bin_from_mul = mul_class[0,:, :, 0:3].sum(axis=-1).reshape(L, L)
+			score = mul_class[0,:, :, 0:7].sum(axis=-1).reshape(L, L)
 
 		np.save(mul_sum_map, mul_class)
 		np.savetxt(dist_sum_map, dist_from_mulclass, fmt='%.4f')
@@ -711,6 +724,19 @@ def generate_pred_shell(shell_file, customdir, outdir, fasta, option, serve_name
 				myfile.write('models_dir[2]=$global_dir/models/pretrain/deepdist_v3rc_msa_GR/3.res152_deepcov_pre_freecontact/\n')
 				myfile.write('models_dir[3]=$global_dir/models/pretrain/deepdist_v3rc_msa_GR/4.res152_deepcov_other/\n')
 				myfile.write('output_dir=%s/msa/\n'%(customdir))
+		elif model_select == 'mul_class_C_11k':
+			if option == 'ALN':
+				myfile.write('models_dir[0]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/1.dres152_deepcov_cov_ccmpred_pearson_pssm/\n')
+				myfile.write('models_dir[1]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/2.dres152_deepcov_plm_pearson_pssm/\n')
+				myfile.write('models_dir[2]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/3.res152_deepcov_pre_freecontact/\n')
+				myfile.write('models_dir[3]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/4.res152_deepcov_other/\n')
+				myfile.write('output_dir=%s/aln/\n'%(customdir))
+			elif option == 'MSA':
+				myfile.write('models_dir[0]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/1.dres152_deepcov_cov_ccmpred_pearson_pssm/\n')
+				myfile.write('models_dir[1]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/2.dres152_deepcov_plm_pearson_pssm/\n')
+				myfile.write('models_dir[2]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/3.res152_deepcov_pre_freecontact/\n')
+				myfile.write('models_dir[3]=$global_dir/models/pretrain/MULTICOM-CONSTRUCT/4.res152_deepcov_other/\n')
+				myfile.write('output_dir=%s/msa/\n'%(customdir))
 	
 		myfile.write('fasta=%s/%s.fasta\n'%(outdir, fasta))
 		myfile.write('\n## DBTOOL_FLAG\n')
@@ -719,7 +745,9 @@ def generate_pred_shell(shell_file, customdir, outdir, fasta, option, serve_name
 		myfile.write('#################CV_dir output_dir dataset database_path\n')
 		if model_select == 'mul_lable_R':
 			myfile.write('python $global_dir/lib/Model_predict.py $db_tool_dir $fasta ${models_dir[@]} $output_dir \'mul_lable_R\' %s %s\n'%(option, serve_name))
-
+		elif model_select == 'mul_class_C':
+			myfile.write('python $global_dir/lib/Model_predict.py $db_tool_dir $fasta ${models_dir[@]} $output_dir \'mul_class_C\' %s %s\n'%(option, serve_name))
+		
 
 if __name__=="__main__":
 	parser = argparse.ArgumentParser()

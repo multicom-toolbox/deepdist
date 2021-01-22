@@ -9,7 +9,7 @@ Created on Aug 02
 docstring='''
 DNCON4-setup for database and tools
 
-usage: python setup_database.py
+usage: python setup.py
 '''
 
 import sys

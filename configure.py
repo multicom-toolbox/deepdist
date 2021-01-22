@@ -105,8 +105,7 @@ hhsuitedb_dir=''
 ebi_uniref100_dir=''
 DeepDist_run_file=''
 DeepDist_train_script=''
-DeepDist_evalu_ensemble=''
-DeepDist_evalu_individual=''
+DeepDist_pred_enxample=''
 DeepDist_pred_ensemble=''
 DeepDist_pred_individual=''
 DeepDist_feature_generate= ''
@@ -145,14 +144,10 @@ else:
                 DeepDist_run_file = line.strip('\n').split('=')[1]
                 if ' ' in DeepDist_run_file:DeepDist_run_file.replace(' ','')
                 DeepDist_run_file = DeepDist_path +'/' + DeepDist_run_file
-            elif 'evalu_ensemble' in line:
-                DeepDist_evalu_ensemble = line.strip('\n').split('=')[1]
-                if ' ' in DeepDist_evalu_ensemble:DeepDist_evalu_ensemble.replace(' ','')
-                DeepDist_evalu_ensemble = DeepDist_path +'/' + DeepDist_evalu_ensemble
-            elif 'evalu_individual' in line:
-                DeepDist_evalu_individual = line.strip('\n').split('=')[1]
-                if ' ' in DeepDist_evalu_individual:DeepDist_evalu_individual.replace(' ','')
-                DeepDist_evalu_individual = DeepDist_path +'/' + DeepDist_evalu_individual
+            elif 'pred_example' in line:
+                DeepDist_pred_enxample = line.strip('\n').split('=')[1]
+                if ' ' in DeepDist_pred_enxample:DeepDist_pred_enxample.replace(' ','')
+                DeepDist_pred_enxample = DeepDist_path +'/' + DeepDist_pred_enxample
             elif 'pred_ensemble' in line:
                 DeepDist_pred_ensemble = line.strip('\n').split('=')[1]
                 if ' ' in DeepDist_pred_ensemble:DeepDist_pred_ensemble.replace(' ','')
@@ -173,12 +168,10 @@ configure_file(DeepDist_run_file, 'py', 'GLOBAL_FLAG', 'global_dir', DeepDist_pa
 configure_file(DeepDist_run_file, 'py', 'DBTOOL_FLAG', 'db_tool_dir', DeepDist_db_dir)
 configure_database(DeepDist_run_file, 'py', 'DATABASE_FLAG', ['uniref90_dir','metaclust50_dir','hhsuitedb_dir','ebi_uniref100_dir'], 
     [uniref90_dir,metaclust50_dir,hhsuitedb_dir,ebi_uniref100_dir])
-print("configure evaluate ensemble script...")
-configure_file(DeepDist_evalu_ensemble, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
-configure_file(DeepDist_evalu_ensemble, 'sh', 'FEATURE_FLAG', 'feature_dir', DeepDist_db_dir)
-print("configure evaluate individual script...")
-configure_file(DeepDist_evalu_individual, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
-configure_file(DeepDist_evalu_individual, 'sh', 'FEATURE_FLAG', 'feature_dir', DeepDist_db_dir)
+print("configure predict example ensemble script...")
+print(DeepDist_pred_enxample)
+configure_file(DeepDist_pred_enxample, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
+configure_file(DeepDist_pred_enxample, 'sh', 'DBTOOL_FLAG', 'db_tool_dir', DeepDist_db_dir)
 print("configure predict ensemble script...")
 configure_file(DeepDist_pred_ensemble, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
 configure_file(DeepDist_pred_ensemble, 'sh', 'DBTOOL_FLAG', 'db_tool_dir', DeepDist_db_dir)
