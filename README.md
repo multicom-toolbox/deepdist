@@ -4,7 +4,7 @@ Deep learning prediction of protein distance map via multi-classification and re
 **(1) Download DeepDist system package (short path is recommended)**
 
 ```
-git clone git@github.com:jianlin-cheng/deepdist.git
+git clone git@github.com:multicom-toolbox/deepdist.git
 
 cd deepdist
 ```
