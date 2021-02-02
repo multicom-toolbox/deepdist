@@ -372,7 +372,7 @@ if __name__ == '__main__':
     db_tools_dir=os.path.abspath(db_tools_dir)
 
     # write db_dir to /installation/path.inf
-    configure_file(global_path + '/installation/', 'inf', 'dncon4_db_dir', db_tools_dir)
+    configure_file(global_path + '/installation/', 'inf', 'DeepDist_db_dir', db_tools_dir)
 
     os.chdir(global_path)
     script_path = os.path.dirname(os.path.abspath(__file__))

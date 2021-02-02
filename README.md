@@ -20,6 +20,7 @@ if on ubuntu system, please run below command first
 	sudo apt-get install csh
 	sudo ln -s bash /bin/sh.bash 
 	sudo mv /bin/sh.bash /bin/sh
+	sudo apt-get install tcsh (if already installed, ignore this)
 ```
 
 **(3) Configure deepdist (required)**

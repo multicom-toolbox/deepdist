@@ -7,7 +7,7 @@ env_dir=$gloable_dir/env/
 echo install virtual environment to $env_dir
 cd $env_dir
 rm -rf deepdist_virenv
-pyvenv deepdist_virenv
+python3 -m venv deepdist_virenv
 source $env_dir/deepdist_virenv/bin/activate
 pip install --upgrade pip
 pip install keras==2.1.6
@@ -16,7 +16,7 @@ pip install matplotlib
 pip install scipy
 pip install numba
 pip install sklearn
-pip install --upgrade h5py
+pip install h5py==2.10.0
 ## on multicom use tf1.5, on lewis use tf1.9
 sysOS=`uname -n`
 str1="lewis"

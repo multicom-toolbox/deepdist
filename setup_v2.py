@@ -192,8 +192,8 @@ def download_uniref90(db_tools_dir,version,db_dir=""):
     if os.path.exists("uniref90.pal") and os.path.exists("uniref90.ssi"):
         print("\tuniref90 is found, skip!")
     else:
-        if os.path.exists(version+".tar.gz"):
-            os.system("rm "+version+".tar.gz")
+        # if os.path.exists(version+".tar.gz"):
+        #     os.system("rm "+version+".tar.gz")
         os.system("wget http://sysbio.rnet.missouri.edu/dncon4_db_tools/databases/"+version+".tar.gz")
         if os.path.exists(version+".tar.gz"):
             print("\tuniref90 is found, start extracting files")
@@ -372,11 +372,11 @@ if __name__ == '__main__':
     db_tools_dir=os.path.abspath(db_tools_dir)
 
     # write db_dir to /installation/path.inf
-    configure_file(global_path + '/installation/', 'inf', 'dncon4_db_dir', db_tools_dir)
+    configure_file(global_path + '/installation/', 'inf', 'DeepDist_db_dir', db_tools_dir)
 
     os.chdir(global_path)
     script_path = os.path.dirname(os.path.abspath(__file__))
-    #install virtual environment
+    # install virtual environment
     vir_dir = global_path+ '/env'
     if not os.path.exists(vir_dir):
         os.makedirs(vir_dir)
@@ -412,6 +412,37 @@ if __name__ == '__main__':
         os.makedirs(install_dir)
         os.system("chmod -R 755 "+install_dir)
 
+    #### Download blast-2.2.26 for formating sequence DB
+    if os.path.exists(install_dir+"/blast-2.2.26.done"):
+        print(install_dir+"/blast-2.2.26 installed....skip")
+    else:
+        os.system("touch "+install_dir+"/blast-2.2.26.running")
+        tool = "blast-2.2.26-x64-linux.tar.gz" 
+        address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/tools/blast-2.2.26-x64-linux.tar.gz" 
+        direct_download(tool, address, tools_dir)
+        os.system("mv "+install_dir+"/blast-2.2.26.running "+install_dir+"/blast-2.2.26.done")
+        print(install_dir+"/blast-2.2.26 installed")
+
+    #### Download hmmer-3.1b2-linux-intel-x86_64 for indexing sequence DB
+    if os.path.exists(install_dir+"/hmmer-3.1b2-linux-intel-x86_64.done"):
+        print(install_dir+"/hmmer-3.1b2-linux-intel-x86_64 installed....skip")
+    else:
+        os.system("touch "+install_dir+"/hmmer-3.1b2-linux-intel-x86_64.running")
+        tool = "hmmer-3.1b2-linux-intel-x86_64.tar.gz"
+        address = "http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz"
+        direct_download(tool, address, tools_dir)
+        tool = re.sub("\.tar.gz","",tool)
+        os.chdir(tools_dir+"/"+tool)
+        retcode = subprocess.call("./configure", shell=True)
+        if retcode :
+            print("Failed to configure "+tools_dir+"/"+tool)
+            sys.exit(1)
+        retcode = subprocess.call("make", shell=True)
+        if retcode :
+            print("Failed to make "+tools_dir+"/"+tool)
+            sys.exit(1)
+        os.system("mv "+install_dir+"/hmmer-3.1b2-linux-intel-x86_64.running "+install_dir+"/hmmer-3.1b2-linux-intel-x86_64.done")
+        print(install_dir+"/hmmer-3.1b2-linux-intel-x86_64 installed")
 
     ### (2) Download databases
     os.chdir(database_dir)
@@ -440,6 +471,17 @@ if __name__ == '__main__':
         retcode = subprocess.call("cp -r "+tools_dir+"/blast-2.2.26 ./pkg/", shell=True)
         os.system("mv "+install_dir+"/SCRATCH-1D_1.1.running "+install_dir+"/SCRATCH-1D_1.1.done")
         print(install_dir+"/SCRATCH-1D_1.1 installed")
+
+    #### Downlaod MetaPSICOV
+    if os.path.exists(install_dir+"/metapsicov.done"):
+        print(install_dir+"/metapsicov installed....skip")
+    else:
+        os.system("touch "+install_dir+"/metapsicov.running")
+        tool = "metapsicov.tar.gz"
+        address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/tools/metapsicov.tar.gz"
+        direct_download(tool, address, tools_dir)
+        os.system("mv "+install_dir+"/metapsicov.running "+install_dir+"/metapsicov.done")
+        print(install_dir+"/metapsicov installed")
 
     #### Downlaod PSIPRED
     if os.path.exists(install_dir+"/psipred.4.0.done"):
@@ -474,5 +516,15 @@ if __name__ == '__main__':
         os.system("mv "+install_dir+"/cd-hit-v4.6.8-2017-1208.running "+install_dir+"/cd-hit-v4.6.8-2017-1208.done")
         print(install_dir+"/cd-hit-v4.6.8-2017-1208 installed")
 
+    #### Download DeepAlign1.0
+    if os.path.exists(install_dir+"/DeepAlign1.0.done"):
+        print(install_dir+"/DeepAlign1.0 installed....skip")
+    else:
+        os.system("touch "+install_dir+"/DeepAlign1.0.running")
+        tool = "DeepAlign1.0.tar.gz"
+        address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/tools/DeepAlign1.0.tar.gz"
+        direct_download(tool, address, tools_dir)
+        os.system("mv "+install_dir+"/DeepAlign1.0.running "+install_dir+"/DeepAlign1.0.done")
+        print(install_dir+"/DeepAlign1.0 installed")
 
 
