@@ -42,7 +42,6 @@ sh installation/set_env.sh
 <h5>Case 1: run individual model</h5>
 
 ```
-
 sh predictors/individual/pred_deepdist_plm_cpu.sh
 sh predictors/individual/pred_deepdist_plm_lewis_cpu.sh
 
@@ -53,7 +52,6 @@ Output directory: example/*fasta name*/pred_map0/rr/
 <h5>Case 2: example for run ensemble model with fasta input</h5>
 
 ```
-
 sh predictors/ensemble/example/pred_deepdist_v1.sh
 sh predictors/ensemble/example/pred_deepdist_v1_lewis.sh
 
@@ -63,7 +61,6 @@ Output directory: example/*fasta name*/pred_map_ensem/rr/
 <h5>Case 3: example for run ensemble model with MSA input</h5>
 
 ```
-
 sh predictors/ensemble/example/pred_deepdist_v2.sh
 sh predictors/ensemble/example/pred_deepdist_v2_lewis.sh
 
@@ -84,12 +81,11 @@ sh predictors/ensemble/pred_deepdist_v1.sh example/T1019s1.fasta predictors/resu
 <h5>Case 2: run with MSA input</h5>
 
 ```
-Note: The output multiclass channel of MULTICOM-CONSTRUCT is 10 similar to CASP14 format. The output multiclass channel of 
-MULTICOM-DIST is 42 which maybe better for protein tertiary structure (Please see the [deepdist2](https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full) paper for more detail)
-
-h predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
+sh predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
 sh predictors/ensemble/pred_deepdist_v2_dist.sh fasta_file MSA_file output_folder
 example:
 sh predictors/ensemble/pred_deepdist_v2_construct.sh example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
 
 ```
+Note: The output multiclass channel of MULTICOM-CONSTRUCT is 10 similar to CASP14 format. The output multiclass channel of 
+MULTICOM-DIST is 42 which maybe better for protein tertiary structure (Please see the [deepdist2](https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full) paper for more detail)
