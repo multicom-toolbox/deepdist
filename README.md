@@ -54,8 +54,8 @@ Output directory: example/*fasta name*/pred_map0/rr/
 
 ```
 
-sh predictors/ensemble/example/pred_deepdist1.sh
-sh predictors/ensemble/example/pred_deepdist1_lewis.sh
+sh predictors/ensemble/example/pred_deepdist_v1.sh
+sh predictors/ensemble/example/pred_deepdist_v1_lewis.sh
 
 Output directory: example/*fasta name*/pred_map_ensem/rr/
 ```
@@ -64,8 +64,8 @@ Output directory: example/*fasta name*/pred_map_ensem/rr/
 
 ```
 
-sh predictors/ensemble/example/pred_deepdist2.sh
-sh predictors/ensemble/example/pred_deepdist2_lewis.sh
+sh predictors/ensemble/example/pred_deepdist_v2.sh
+sh predictors/ensemble/example/pred_deepdist_v2_lewis.sh
 
 Output directory: example/*fasta name*/pred_map_ensem/rr/
 ```
@@ -75,17 +75,21 @@ Output directory: example/*fasta name*/pred_map_ensem/rr/
 <h5>Case 1: run with fasta input</h5>
 
 ```
-sh predictors/ensemble/pred_deepdist1.sh fasta_file output_folder
+sh predictors/ensemble/pred_deepdist_v1.sh fasta_file output_folder
 example:
-sh predictors/ensemble/pred_deepdist1.sh example/T1019s1.fasta predictors/results/T1019s1
+sh predictors/ensemble/pred_deepdist_v1.sh example/T1019s1.fasta predictors/results/T1019s1
 
 ```
 
 <h5>Case 2: run with MSA input</h5>
 
 ```
-sh predictors/ensemble/pred_deepdist2.sh fasta_file MSA_file output_folder
+Note: The output multiclass channel of MULTICOM-CONSTRUCT is 10 similar to CASP14 format. The output multiclass channel of 
+MULTICOM-DIST is 42 which maybe better for protein tertiary structure (Please see the [deepdist2](https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full) paper for more detail)
+
+h predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
+sh predictors/ensemble/pred_deepdist_v2_dist.sh fasta_file MSA_file output_folder
 example:
-sh predictors/ensemble/pred_deepdist2.sh example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
+sh predictors/ensemble/pred_deepdist_v2_construct.sh example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
 
 ```
