@@ -32,7 +32,7 @@ if (not $db_tool_dir){
 	exit(1);
 }
 
-
+ 
 ####################################################################################################
 use constant{
 	SCRATCH      => '/tools/SCRATCH-1D_1.1/bin/run_SCRATCH-1D_predictors.sh',
@@ -67,9 +67,12 @@ print "Seq  : ".seq_fasta($fasta)."\n\n";
 
 my $id = basename($fasta, ".fasta");
 system_cmd("mkdir -p $outdir") if not -d $outdir;
-system_cmd("cp $fasta $outdir/");
-system_cmd("echo \">$id\" > $outdir/$id.fasta");
-system_cmd("echo \"".seq_fasta($fasta)."\" >> $outdir/$id.fasta");
+if(not -e $outdir."/".$id.".fasta"){
+	print $outdir."/".$id.fasta;
+	system_cmd("cp $fasta $outdir/");
+	system_cmd("echo \">$id\" > $outdir/$id.fasta");
+	system_cmd("echo \"".seq_fasta($fasta)."\" >> $outdir/$id.fasta");
+}
 $outdir = abs_path($outdir);
 chdir $outdir or confess $!;
 $fasta = basename($fasta);

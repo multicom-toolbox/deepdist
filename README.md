@@ -9,7 +9,7 @@ git clone git@github.com:multicom-toolbox/deepdist.git
 cd deepdist
 ```
 
-**(2) Activate system python3 environment (required)**
+**(2) Activate system python3.6 environment (required)**
 
 ```
 if on lewis: sh installation/activate_python3_in_lewis_server.sh
@@ -21,6 +21,7 @@ if on ubuntu system, please run below command first
 	sudo ln -s bash /bin/sh.bash 
 	sudo mv /bin/sh.bash /bin/sh
 	sudo apt-get install tcsh (if already installed, ignore this)
+Note: The system is developed and tested under python3.6. 
 ```
 
 **(3) Configure deepdist (required)**
@@ -78,7 +79,7 @@ sh predictors/ensemble/pred_deepdist_v1.sh example/T1019s1.fasta predictors/resu
 
 ```
 
-<h5>Case 2: run with MSA input</h5>
+<h5>Case 2: run with MSA input</h5>    
 
 ```
 sh predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
@@ -87,8 +88,21 @@ example:
 sh predictors/ensemble/pred_deepdist_v2_construct.sh example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
 
 ```
-Note: The output multiclass channel of MULTICOM-CONSTRUCT is 10 similar to CASP14 format. The output multiclass channel of 
-MULTICOM-DIST is 42 which maybe better for protein tertiary structure (Please see the [deepdist2](https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full) paper for more detail)
+
+<h5>Case 3: run with MSA input with different model option</h5>
+
+```
+python run_deepdist.py -f fasta_file -a MSA_file -o output_dir -m method
+example:
+python run_deepdist.py -f ./example/T1019s1.fasta -a ./example/T1019s1.aln -o ./predictors/results/test/ -m mul_class_C
+Different options for -m:
+	mul_class_C: Predict 1o-bins multi-classification distance map (The CASP14 official format)
+	mul_class_G: Predict 42-bins multi-classification distance map (Can replace the distance map in trRosetta npz file by run python ./lib/npy2trRosetta_npz.py -i npy_file -n npz_file -o new_npz_file)
+	mul_label_R: Predict the real-value distance map and the 25-bins multi-classification distance map at the same time. (The improved version of DeepDist1)
+
+```
+
+Note: For more detailed descriptions of the predicted distance map, please check the paper below. If you have any further questions, please feel free to contact the zggc@umsystem.edu for help.
 
 <h2>References</h2>
 
