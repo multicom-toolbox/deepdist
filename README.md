@@ -89,3 +89,9 @@ sh predictors/ensemble/pred_deepdist_v2_construct.sh example/T1019s1.fasta examp
 ```
 Note: The output multiclass channel of MULTICOM-CONSTRUCT is 10 similar to CASP14 format. The output multiclass channel of 
 MULTICOM-DIST is 42 which maybe better for protein tertiary structure (Please see the [deepdist2](https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full) paper for more detail)
+
+<h2>References</h2>
+
+1. Wu, T., Guo, Z., Hou, J., & Cheng, J. (2021). DeepDist: real-value inter-residue distance prediction with deep residual convolutional network. BMC bioinformatics, 22(1), 1-17. (https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03960-9)
+
+2. Guo, Z., Wu, T., Liu, J., Hou, J., & Cheng, J. (2021). Improving deep learning-based protein distance prediction in CASP14. bioRxiv. (https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full)
