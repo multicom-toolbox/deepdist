@@ -134,7 +134,7 @@ elif len(sys.argv) == 7:
     predict_method = str(sys.argv[6])
 else:
     print('please input the right parameters\n')
-    print("[db_tool_dir] [fasta_file] [model_dir] [output_dir] [predict_method]")
+    print("[db_tool_dir] [fasta_file] [alignment_file] [model_dir] [output_dir] [predict_method]")
     sys.exit(1)
 
 print("Model dir:", CV_dir)
@@ -146,7 +146,7 @@ print("Find gloabl path :", GLOABL_Path)
 path_of_X = outdir
 path_of_Y = outdir
 
-
+sys.exit(1)
 feature_list = 'other'# ['combine', 'combine_all2d', 'other', 'ensemble']  # combine will output three map and it combine, other just output one pred
 data_list_choose = 'test'# ['train', 'test', 'train_sub', 'all']
 Maximum_length = 2000  # casp12 700
