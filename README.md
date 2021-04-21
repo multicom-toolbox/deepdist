@@ -96,9 +96,11 @@ python run_deepdist.py -f fasta_file -a MSA_file -o output_dir -m method
 example:
 python run_deepdist.py -f ./example/T1019s1.fasta -a ./example/T1019s1.aln -o ./predictors/results/test/ -m mul_class_C
 Different options for -m:
-	mul_class_C: Predict 1o-bins multi-classification distance map (The CASP14 official format)
-	mul_class_G: Predict 42-bins multi-classification distance map (Can replace the distance map in trRosetta npz file by run python ./lib/npy2trRosetta_npz.py -i npy_file -n npz_file -o new_npz_file)
-	mul_label_R: Predict the real-value distance map and the 25-bins multi-classification distance map at the same time. (The improved version of DeepDist1)
+1.mul_class_C: Predict 10-bins multi-classification distance map (The CASP14 official format)
+2.mul_class_G: Predict 42-bins multi-classification distance map (Can replace the distance map in trRosetta npz file by run 
+	python ./lib/npy2trRosetta_npz.py -i npy_file -n npz_file -o new_npz_file)
+3.mul_label_R: Predict the real-value distance map and the 25-bins multi-classification distance map at the same time. 
+	(The improved version of DeepDist1)
 
 ```
 
