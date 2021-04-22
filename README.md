@@ -1,4 +1,4 @@
-# deepdist
+# DeepDist
 Deep learning prediction of protein distance map via multi-classification and regression
 
 **(1) Download DeepDist system package (short path is recommended)**
