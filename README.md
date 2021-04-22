@@ -1,4 +1,4 @@
-# deepdist
+# DeepDist
 Deep learning prediction of protein distance map via multi-classification and regression
 
 **(1) Download DeepDist system package (short path is recommended)**
@@ -108,6 +108,4 @@ Note: For more detailed descriptions of the predicted distance map, please check
 
 <h2>References</h2>
 
-1. Wu, T., Guo, Z., Hou, J., & Cheng, J. (2021). DeepDist: real-value inter-residue distance prediction with deep residual convolutional network. BMC bioinformatics, 22(1), 1-17. (https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03960-9)
-
-2. Guo, Z., Wu, T., Liu, J., Hou, J., & Cheng, J. (2021). Improving deep learning-based protein distance prediction in CASP14. bioRxiv. (https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full)
+1. Guo, Z., Wu, T., Liu, J., Hou, J., & Cheng, J. (2021). Improving deep learning-based protein distance prediction in CASP14. bioRxiv. (https://www.biorxiv.org/content/10.1101/2021.02.02.429462v1.full)
