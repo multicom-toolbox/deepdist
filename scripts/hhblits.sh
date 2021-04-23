@@ -4,7 +4,7 @@ PATH=$PATH:$HHLIB/bin:$HHLIB/scripts
 
 if [ $# -ne 5 ]
 then
-        echo "need three parameters: target id, fasta file, output directory, db, coverage";
+        echo "need five parameters: target id, fasta file, output directory, db, coverage";
         exit 1
 fi
 
