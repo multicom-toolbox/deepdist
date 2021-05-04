@@ -68,24 +68,41 @@ sh predictors/ensemble/example/pred_deepdist_v2_lewis.sh
 Output directory: example/*fasta name*/pred_map_ensem/rr/
 ```
 
+**(5) Different ways to generate MSAs for DeepDist**
+
+<h5>1.Download and install the [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/) to generate the MSAS</h5>
+<h5>2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against [uniclust30](https://uniclust.mmseqs.com/)(Small and light) </h5>
+
+```
+wget http://gwdu111.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz
+
+```
+
+<h5>3.Use HHblits to search against [BFD](https://bfd.mmseqs.com/)(Large but precise)</h5>
+
+```
+example to run the HHblits:
+sh ./scripts/hhblits.sh T1049  /Full_path_of_DeeDist/example/T1049.fasta /Full_path_of_DeeDist/predictors/resluts/T1049 /The_folder_of_uniclust30/uniclust30_2018_08 50
+```
+
 **(6) run whole deepdist project**
 
 <h5>Case 1: run with fasta input</h5>
 
 ```
-sh predictors/ensemble/pred_deepdist_v1.sh fasta_file output_folder
+sh ./predictors/ensemble/pred_deepdist_v1.sh fasta_file output_folder
 example:
-sh predictors/ensemble/pred_deepdist_v1.sh example/T1019s1.fasta predictors/results/T1019s1
+sh ./predictors/ensemble/pred_deepdist_v1.sh ./example/T1019s1.fasta predictors/results/T1019s1
 
 ```
 
 <h5>Case 2: run with MSA input</h5>    
 
 ```
-sh predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
-sh predictors/ensemble/pred_deepdist_v2_dist.sh fasta_file MSA_file output_folder
+sh ./predictors/ensemble/pred_deepdist_v2_construct.sh fasta_file MSA_file output_folder
+sh ./predictors/ensemble/pred_deepdist_v2_dist.sh fasta_file MSA_file output_folder
 example:
-sh predictors/ensemble/pred_deepdist_v2_construct.sh example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
+sh ./predictors/ensemble/pred_deepdist_v2_construct.sh ./example/T1019s1.fasta example/T1019s1.aln predictors/results/T1019s1
 
 ```
 

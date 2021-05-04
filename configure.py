@@ -156,6 +156,10 @@ else:
                 DeepDist_pred_individual = line.strip('\n').split('=')[1]
                 if ' ' in DeepDist_pred_individual:DeepDist_pred_individual.replace(' ','')
                 DeepDist_pred_individual = DeepDist_path +'/' + DeepDist_pred_individual
+            elif 'hhblits' in line:
+                DeepDist_hhblits = line.strip('\n').split('=')[1]
+                if ' ' in DeepDist_hhblits:DeepDist_hhblits.replace(' ','')
+                DeepDist_hhblits = DeepDist_path +'/' + DeepDist_hhblits
             # elif 'feature_generate' in line:
             #     DeepDist_feature_generate = line.strip('\n').split('=')[1]
             #     if ' ' in DeepDist_feature_generate:DeepDist_feature_generate.replace(' ','')
@@ -178,33 +182,8 @@ configure_file(DeepDist_pred_ensemble, 'sh', 'DBTOOL_FLAG', 'db_tool_dir', DeepD
 print("configure predict individual script...")
 configure_file(DeepDist_pred_individual, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
 configure_file(DeepDist_pred_individual, 'sh', 'DBTOOL_FLAG', 'db_tool_dir', DeepDist_db_dir)
+print("configure hhblits script...")
+configure_file(DeepDist_hhblits, 'sh', 'GLOBAL_FLAG', 'HHLIB', DeepDist_path)
 # print("configure feature generate script...")
 # configure_file(DeepDist_feature_generate, 'sh', 'GLOBAL_FLAG', 'global_dir', DeepDist_path)
 # configure_file(DeepDist_feature_generate, 'sh', 'FEATURE_FLAG', 'feature_dir', DeepDist_db_dir)
-
-### ask if want to donwload the feature data
-if os.path.exists(DeepDist_db_dir):
-    if os.path.exists(DeepDist_db_dir+'/features/'):
-        os.chdir(DeepDist_db_dir+'/features/')
-    else:
-        os.mkdir(DeepDist_db_dir+'/features/')
-    if sys.version_info[0] < 3:
-        download_flag = raw_input("\n\nWould you want to download the training database ? It will take 30 min to download, and cost 400GB disk space. (No/Yes)")
-    else:
-        download_flag = input("Would you want to download the training database ? It will take 30 min to download, and cost 400GB disk space. (No/Yes)")
-    if 'Y' in download_flag or 'y' in download_flag:
-        os.system("wget http://sysbio.rnet.missouri.edu/dncon4_db_tools/features/DEEPCOV.tar.gz")
-        if os.path.exists("DEEPCOV.tar.gz"):
-            print("DEEPCOV.tar.gz already exists")
-        else:
-            print("Failed to download DEEPCOV.tar.gz from http://sysbio.rnet.missouri.edu/dncon4_db_tools/features/DEEPCOV.tar.gz")
-            sys.exit(1)
-    if sys.version_info[0] < 3:
-        extract_flag = raw_input("Would you want to extract the training database ? It will take 15 hr to extract, and cost another 700GB disk space. (No/Yes)")
-    else:
-        extract_flag = input("Would you want to extract the training database ? It will take 15 hr to extract, and cost another 700GB disk space. (No/Yes)")
-    if 'Y' in extract_flag or 'y' in extract_flag:
-        os.system("tar zxvf DEEPCOV.tar.gz")
-        print("Extract DEEPCOV.tar.gz done!")
-        if os.path.exists("DEEPCOV.tar.gz"):
-            os.system("rm DEEPCOV.tar.gz")

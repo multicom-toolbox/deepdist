@@ -1,4 +1,5 @@
 #!/bin/bash
+##GLOBAL_FLAG
 export HHLIB=/storage/htc/bdm/zhiye/DNCON4_db_tools/tools/hhsuite-3.2.0-SSE2-Linux
 PATH=$PATH:$HHLIB/bin:$HHLIB/scripts
 

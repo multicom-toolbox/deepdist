@@ -363,7 +363,7 @@ if __name__ == '__main__':
     ##!!! Don't Change the code below##
     global_path = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(global_path):
-        print("The DNCON4 directory "+global_path+" is not existing, set the path as your unzipped DNCON4 directory")
+        print("The DeepDist directory "+global_path+" is not existing, set the path as your unzipped DeepDist directory")
         sys.exit(1)
 
     if not os.path.exists(db_tools_dir):
@@ -393,7 +393,7 @@ if __name__ == '__main__':
         print(vir_dir+"/env_vir installed")
 
 
-    print("Start install DNCON4_db_tools into "+db_tools_dir)
+    print("Start install DeepDist_db_tools into "+db_tools_dir)
     os.chdir(db_tools_dir)
     database_dir = db_tools_dir+"/databases"
     tools_dir = db_tools_dir+"/tools"
