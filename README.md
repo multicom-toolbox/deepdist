@@ -70,15 +70,14 @@ Output directory: example/*fasta name*/pred_map_ensem/rr/
 
 **(5) Different ways to generate MSAs for DeepDist**
 
-<h5>1.Download and install the [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/) to generate the MSAS</h5>
-<h5>2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against [uniclust30](https://uniclust.mmseqs.com/)(Small and light) [百度](http://baidu.com)</h5>
+1.Download and install the [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/) to generate the MSAS
+2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against [uniclust30](https://uniclust.mmseqs.com/)(Small and light)
 
 ```
 wget http://gwdu111.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz
 
 ```
-
-<h5>3.Use HHblits to search against [BFD](https://bfd.mmseqs.com/)(Large but precise)</h5>
+3.Use HHblits to search against [BFD](https://bfd.mmseqs.com/)(Large but precise)
 
 ```
 example to run the HHblits:
