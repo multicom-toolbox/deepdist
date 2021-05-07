@@ -1,7 +1,7 @@
 # DeepDist
 Deep learning prediction of protein distance map via multi-classification and regression
 
-**(1) Download DeepDist system package (short path is recommended)**
+**(1) Download DeepDist package (a short path for the package is recommended)**
 
 ```
 git clone git@github.com:multicom-toolbox/deepdist.git
@@ -9,22 +9,23 @@ git clone git@github.com:multicom-toolbox/deepdist.git
 cd deepdist
 ```
 
-**(2) Activate system python3.6 environment (required)**
+**(2) Install and activate python3.6.x environment on Linux (required)**
 
+The installation of python3.6.x may be different for different Linux systems. 
+Note: The system is developed and tested under python3.6.x. 
+
+**(3) Make sure bash is installed on the Linux**
 ```
-if on lewis: sh installation/activate_python3_in_lewis_server.sh
+For most Linux systems such as Redhat and centos, bash is installed by default. No action is needed.
 
-if on multicom: sh installation/activate_python3_in_multicom_server.sh
-
-if on ubuntu system, please run below command first
+However, because bash is often not avaialble at a ubuntu system, you can run the following commands to install it
 	sudo apt-get install csh
 	sudo ln -s bash /bin/sh.bash 
 	sudo mv /bin/sh.bash /bin/sh
-	sudo apt-get install tcsh (if already installed, ignore this)
-Note: The system is developed and tested under python3.6. 
+	sudo apt-get install tcsh (if already installed, ignore this)	
 ```
 
-**(3) Configure deepdist (required)**
+**(4) Configure deepdist (required)**
 
 <h5>There are two setup script, run one of them is enough. User want to predict with fasta input run setup.py, user want to predict with MSA input run setup_v2.py</h5>
 
