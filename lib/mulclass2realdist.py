@@ -60,10 +60,9 @@ if __name__=="__main__":
     args = parser.parse_args()
     input_file = args.input
     outdir = args.outdir
-
+    chkdirs(outdir)
     name = os.path.basename(input_file).split('.')[0]
     print('process %s'%name)
-
     npy = np.load(input_file)
     _class = npy.shape[-1]
     npy = np.squeeze(npy)

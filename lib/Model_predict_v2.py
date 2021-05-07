@@ -12,6 +12,7 @@ import time
 sys.path.insert(0, sys.path[0])
 from DNCON_lib import *
 from training_strategy import *
+from mulclass2realdist import *
 
 import subprocess
 import numpy as np
@@ -548,6 +549,9 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
             npy4 = np.load(npy4dir + seq_name + ".npy")
             sum_npy = (npy1 * 0.22 + npy2 * 0.34 + npy3 * 0.22 + npy4 * 0.22)
             np.save(sum_npy_filename, sum_npy)
+        sum_multiclass = np.squeeze(np.load(sum_npy_filename))
+        real_dist = npy2distmap(sum_multiclass)
+        np.savetxt(real_dist_filename, real_dist, fmt='%.4f')
 
     cmap_dir= sum_cmap_dir
     rr_dir = cmap_dir+'/rr/'
