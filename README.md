@@ -134,7 +134,7 @@ sh ./scripts/hhblits.sh T1049  /Full_path_of_DeeDist/example/T1049.fasta /Full_p
 ```
 
 
-Note: If you have any further questions, please post your question at  feel free to contact the zggc@umsystem.edu for help.
+Note: If you have any further questions, please post your question at this GitHub website or feel free to contact Zhiye Guo: zggc@umsystem.edu for help.
 
 <h2>References</h2>
 
