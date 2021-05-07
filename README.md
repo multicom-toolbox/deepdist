@@ -118,7 +118,7 @@ Note: The accuracy of the ensemble of multiple deep learning models is generally
 Download and install the [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/). This package requires to install large protein sequence databases. 
 
 2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against a standard protein sequence databse created by HHsuite (e.g. UniRef30) to generate MSA.
-The UniRef database created by HHsuite is much smaller than the databases used by DeepMSA. So this approach is faster than DeepMSA, but may be less senstiive for some proteins. For instance, you can download a recent UniRef database (UniRef30_2020_06_hhsuite.tar.gz) here: http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/ as follows. 
+The UniRef database created by HHsuite is much smaller than the databases used by DeepMSA. So this approach is faster than DeepMSA, but may be less senstiive for some proteins. For instance, you can download a recent UniRef database (UniRef30_2020_06_hhsuite.tar.gz) [here](http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/) as follows. 
 ```
 wget http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/UniRef30_2020_06_hhsuite.tar.gz
 ```
@@ -126,7 +126,7 @@ Below is an example of generating a MSA from the database.
 ```
 sh ./scripts/hhblits.sh T1049  /Full_path_of_DeeDist/example/T1049.fasta /Full_path_of_DeeDist/predictors/resluts/T1049 /Full_path/UniRef30_2020_06_hhsuite_database
 ```
-3.Use HHblits to search against the Big Fantastic Database (BFD) (https://bfd.mmseqs.com/)
+3.Use HHblits to search against the Big Fantastic Database [BFD](https://bfd.mmseqs.com/)
 The BFD database is very large. Searching a protein against BFD is slow, but more sensitive. 
 Below is an exmaple of generating a MSA from BFD:
 ```
