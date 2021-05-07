@@ -146,7 +146,6 @@ print("Find gloabl path :", GLOABL_Path)
 path_of_X = outdir
 path_of_Y = outdir
 
-sys.exit(1)
 feature_list = 'other'# ['combine', 'combine_all2d', 'other', 'ensemble']  # combine will output three map and it combine, other just output one pred
 data_list_choose = 'test'# ['train', 'test', 'train_sub', 'all']
 Maximum_length = 2000  # casp12 700
