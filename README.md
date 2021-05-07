@@ -58,7 +58,7 @@ sh predictors/ensemble/example/pred_deepdist_msa.sh
 (3) On Mizzou's Lewis Cluster
 sh predictors/ensemble/example/pred_deepdist_msa_lewis.sh
 
-Output directory: example/*fasta name*/pred_map_ensem/rr/
+Output directory: example/*fasta name*/pred_map_ensem/rr/. The multi_classification distance file (.npy), binary contact file at 8 Angstrom threshold (.txt), binary conctact file (.rr) that can be visualized by ConEVA (). 
 ```
 
 Command 2 for classifying distances into 42 bins: sh ./predictors/ensemble/pred_deepdist_msa_dist.sh fasta_file MSA_file output_folder
@@ -133,6 +133,9 @@ Below is an exmaple of generating a MSA from BFD:
 sh ./scripts/hhblits.sh T1049  /Full_path_of_DeeDist/example/T1049.fasta /Full_path_of_DeeDist/predictors/resluts/T1049 /the full path of BFD database
 ```
 
+**(6) Convert a multi-classification distance map into a real-value distance map**
+
+????????
 
 Note: If you have any further questions, please post your question at this GitHub website or feel free to contact Zhiye Guo: zggc@umsystem.edu for help.
 
