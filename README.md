@@ -44,7 +44,7 @@ sh ./installation/set_env.sh
 
 **(4) Examples for predicting distance maps using DeepDsit**
 
-<h5>Case 1: run the ensemble of multiple individual deep learning models to predict distance map from a MSA using different commands</h5>
+<h4>Case 1: run the ensemble of multiple individual deep learning models to predict distance map from a MSA using different commands</h4>
 
 Command 1 for classifying distances into 10 bins
 ```
@@ -52,7 +52,7 @@ sh ./predictors/ensemble/pred_deepdist_msa_construct.sh fasta_file MSA_file outp
 
 Examples:
 
-(1)sh ./predictors/ensemble/pred_deepdist_v2_construct.sh ./example/T1019s1.fasta ./example/T1019s1.aln ./predictors/results/T1019s1
+(1)sh ./predictors/ensemble/pred_deepdist_msa_construct.sh ./example/T1019s1.fasta ./example/T1019s1.aln ./predictors/results/T1019s1
 
 (2) On a standard Linux
 sh predictors/ensemble/example/pred_deepdist_msa.sh
@@ -60,7 +60,7 @@ sh predictors/ensemble/example/pred_deepdist_msa.sh
 (3) On Mizzou's Lewis Cluster
 sh predictors/ensemble/example/pred_deepdist_msa_lewis.sh
 ```
-Output directory: example/*fasta name*/pred_map_ensem/. The multi_classification distance file (.npy), the real-value distance file (.txt), binary contact file at 8 Angstrom threshold (.txt), binary conctact file (.rr) that can be visualized by ConEVA (). 
+Output directory: example/*fasta name*/pred_map_ensem/. The multi_classification distance file (.npy), the real-value distance file (.txt), binary contact file at 8 Angstrom threshold (.txt), binary conctact file (.rr) that can be visualized by [ConEVA](https://github.com/multicom-toolbox/ConEVA). 
 
 Command 2 for classifying distances into 42 bins
 ```
@@ -84,7 +84,7 @@ An example:
 python run_deepdist.py -f ./example/T1019s1.fasta -a ./example/T1019s1.aln -o ./predictors/results/test/ -m mul_class_C
 ```
 
-<h5>Case 2: run the ensemble of multiple individual deep learning models to predict distance map from a single sequence in the FASTA format</h5>
+<h4>Case 2: run the ensemble of multiple individual deep learning models to predict distance map from a single sequence in the FASTA format</h4>
 
 ```
 Command: sh ./predictors/ensemble/pred_deepdist_fasta.sh fasta_file output_folder
@@ -98,7 +98,7 @@ sh predictors/ensemble/example/pred_deepdist_fasta_lewis.sh
 ```
 The output is stored in the output directory: example/*fasta name*/pred_map_ensem/
 
-<h5>Case 3: Use the deep learning model based on psudo maximum liklihood (plm) feature set to make prediction. </h5>
+<h4>Case 3: Use the deep learning model based on psudo maximum liklihood (plm) feature set to make prediction. </h4>
 
 ```
 On a standard Linux
