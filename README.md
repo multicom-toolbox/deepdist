@@ -27,7 +27,7 @@ However, because bash is often not avaialble at a ubuntu system, you can run the
 
 **(4) Configure DeepDist (required)**
 
-<h5>There are two ways to configure the system. One is to use setup_msa.py to configure it to take a multiple sequence alignment (MSA) as input to predict distance map. Another one is to use setup_fasta.py to configure it to take a single protein sequence in the FASTA format to predict distance map. You only need to run one script to configure the sytem. setup_msa.py requires downloading a package of about 30 GB, which is much smaller than 500 GB of setup_fasta.py. If you know how to generate your own MSA, it is better to use setup_msa.py to configure the system </h5>
+There are two ways to configure the system. One is to use setup_msa.py to configure it to take a multiple sequence alignment (MSA) as input to predict distance map. Another one is to use setup_fasta.py to configure it to take a single protein sequence in the FASTA format to predict distance map. You only need to run one script to configure the sytem. setup_msa.py requires downloading a package of about 30 GB, which is much smaller than 500 GB of setup_fasta.py. If you know how to generate your own MSA, it is better to use setup_msa.py to configure the system 
 
 ```
 Step 1:
