@@ -29,12 +29,11 @@ sudo apt-get install tcsh (if already installed, ignore this)
 
 **(4) Configure DeepDist (required)**
 
-There are two ways to configure the system. One is to use `setup_msa.py` to configure it to take a multiple sequence alignment (MSA) as input to predict distance map. Another one is to use `setup_fasta.py` to configure it to take a single protein sequence in the FASTA format to predict distance map. You only need to run one script to configure the system. `setup_msa.py` requires downloading a package of about 110GB, which is much smaller than the 500 GB with `setup_fasta.py`. If you know how to generate your own MSA, it is better to use `setup_msa.py` to configure the system.
+Use `setup_msa.py` to configure DeepDist to take a multiple sequence alignment (MSA) as input to predict distance map. `setup_msa.py` requires downloading a package of about 110 GB
 
 ```
 Step 1:
-Option 1: python setup_msa.py    # download the light version (recommended)
-Option 2: python setup_fasta.py  # download the entire package including all the databases and tools for generating MSA and features
+python setup_msa.py
 
 Step 2:
 python configure.py
