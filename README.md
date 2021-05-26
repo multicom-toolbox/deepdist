@@ -128,7 +128,7 @@ Below is an example of generating a MSA from the database.
 ```
 sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist_full_path/predictors/results/T1049 /full_path/UniRef30_2020_06_hhsuite_database
 ```
-3.Use HHblits to search against the Big Fantastic Database [BFD](https://bfd.mmseqs.com/)
+3.Use HHblits to search against the Big Fantastic Database ([BFD](https://bfd.mmseqs.com/)).
 The BFD database is very large. Searching a protein against BFD is slow, but more sensitive. 
 Below is an exmaple of generating a MSA from BFD:
 ```
@@ -138,7 +138,7 @@ sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist
 **(6) Convert a multi-classification distance map into a real-value distance map**
 
 ```
-python ./lib/mulclass2realdist.py -i input_mulclass_prediction -o output_folder
+python ./lib/mulclass2realdist.py -i [input_mulclass_prediction] -o [output_folder]
 example
 python ./lib/mulclass2realdist.py -i ./example/CASP13_results/mul_class/T0949.npy -o ./predictors/results/1/
 ```
