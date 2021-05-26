@@ -99,7 +99,7 @@ sh predictors/ensemble/example/pred_deepdist_fasta.sh
 On Mizzou's Lewis Cluster:
 sh predictors/ensemble/example/pred_deepdist_fasta_lewis.sh
 ```
-The output is stored in the output directory: example/*fasta name*/pred_map_ensem/
+The output is stored in the output directory: `example/*fasta name*/pred_map_ensem/`
 
 <h4>Case 3: Use the deep learning model based on psudo maximum liklihood (plm) feature set to make prediction. </h4>
 
