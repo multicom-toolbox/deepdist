@@ -63,7 +63,7 @@ sh predictors/ensemble/example/pred_deepdist_msa_lewis.sh
 ```
 Output directory: `example/*fasta name*/pred_map_ensem/`. 
 
-The multi_classification distance file (.npy), the real-value distance file (.txt), binary contact file at 8 Angstrom threshold (.txt), binary conctact file (.rr) that can be visualized by [ConEVA](https://github.com/multicom-toolbox/ConEVA). 
+The multi_classification distance file (.npy), the real-value distance file (.txt), binary contact file at 8 Angstrom threshold (.txt), binary contact file (.rr) that can be visualized by [ConEVA](https://github.com/multicom-toolbox/ConEVA). 
 
 Command 2 for classifying distances into 42 bins
 ```
