@@ -53,7 +53,7 @@ sh ./predictors/ensemble/pred_deepdist_msa_construct.sh [fasta_file] [MSA_file] 
 
 Examples:
 
-(1)sh ./predictors/ensemble/pred_deepdist_msa_construct.sh ./example/T1019s1.fasta ./example/T1019s1.aln ./predictors/results/T1019s1
+(1) sh ./predictors/ensemble/pred_deepdist_msa_construct.sh ./example/T1019s1.fasta ./example/T1019s1.aln ./predictors/results/T1019s1
 
 (2) On a standard Linux system
 sh predictors/ensemble/example/pred_deepdist_msa.sh
