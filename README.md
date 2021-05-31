@@ -142,6 +142,21 @@ example
 python ./lib/mulclass2realdist.py -i ./example/CASP13_results/mul_class/T0949.npy -o ./predictors/results/1/
 ```
 
+**(7) Train the network from scratch**
+
+```
+python ./lib/train_deepdist_tune_net.py [model_name] [dataset_name] [feature_file_name] [loss_function] [filter_number] [layers] [kernel_size] [outter_epoch] [inner_epoch] [feature_dir] [output_dir] [accuracy_log_dir] [weights] [index]
+example
+python ./lib/train_deepdist_tune_net.py 'DEEPDIST_RESRC' 'DEEPDIST' 'feature_to_use_plm_v3' 'categorical_crossentropy_C' 64 20 3 70 1 [feature_dir] ./models/custom/test ./models/custom/ 1 1
+```
+The feature dir must have followed sub-directory: cov[The folder of covariance feature, suffix ".cov"], plm[The folder of psudo maximum liklihood feature, suffix ".plm"], pre[The folder of precision feature, suffix ".pre"], other[The folder of DNCON2 features, suffix ".txt"], bin_class[The folder of contact map file, suffix ".txt"], mul_class_2_22[The folder of type 'G' multiclass distance map file, suffix ".npy"]
+Use the command below to generate distance label from pdb file
+```
+python ./scripts/generate_label_from_pdb.py -f [fasta_file] -p [pdb_file] -o [output folder] -t [type of multiclass distance map] 
+example
+python ./scripts/generate_label_from_pdb.py -f ./example//T0949.fasta -p ./example//T0949.pdb -o ./predictors/results/label_test/ -t G
+```
+
 Note: If you have any further questions, please post your question at this GitHub website or feel free to contact Zhiye Guo: zggc9@umsystem.edu for help.
 
 <h2>References</h2>
