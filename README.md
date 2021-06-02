@@ -42,9 +42,9 @@ Step 3:
 sh ./installation/set_env.sh
 ```
 
-**(4) Examples for predicting distance maps using DeepDsit**
+**(4) Examples for predicting distance maps using DeepDist**
 
-<h4>Case 1: run the ensemble of multiple individual deep learning models to predict distance map from a MSA using different commands</h4>
+<h4>Case 1: Use an ensemble of multiple individual deep learning models to predict distance map from a MSA using different commands</h4>
 
 Command 1 for classifying distances into 10 bins
 ```
@@ -62,13 +62,13 @@ sh predictors/ensemble/example/pred_deepdist_msa_lewis.sh
 ```
 Output directory: `example/*fasta name*/pred_map_ensem/`. 
 
-The multi_classification distance file (.npy), the real-value distance file (.txt), binary contact file at 8 Angstrom threshold (.txt), binary contact file (.rr) that can be visualized by [ConEVA](https://github.com/multicom-toolbox/ConEVA). 
+The multi_classification distance file `.npy`, the real-value distance file `.txt`, binary contact file at 8 Angstrom threshold `.txt`, binary contact file `.rr` can be visualized by [ConEVA](https://github.com/multicom-toolbox/ConEVA). 
 
 Command 2 for classifying distances into 42 bins
 ```
 sh ./predictors/ensemble/pred_deepdist_msa_dist.sh [fasta_file] [MSA_file] [output_folder]
 ```
-Command 3 for different options on deep learning choose
+Command 3 for choosing prediction methods
 ```
 python run_deepdist.py -f [fasta_file] -a [MSA_file] -o [output_dir] -m [method]
 ```
@@ -76,7 +76,7 @@ Different options for -m:
 
 1. `mul_class_C`: Predict 10-bin multi-classification distance map (The CASP14 official format)
 
-2. `mul_class_G`: Predict 42-bin multi-classification distance map (It can be convereted trRosetta format. You can replace the distance map in trRosetta npz file by running python ./lib/npy2trRosetta_npz.py -i npy_file -n npz_file -o new_npz_file)
+2. `mul_class_G`: Predict 42-bin multi-classification distance map (It can be converted to trRosetta format. You can replace the distance map in trRosetta npz file by running `python ./lib/npy2trRosetta_npz.py -i [npy_file] -n [npz_file] -o [new_npz_file]`)
 
 3. `mul_label_R`: Predict the real-value distance map and the 25-bins multi-classification distance map at the same time. 
 	(This is the improved version of DeepDist1)
@@ -86,7 +86,7 @@ An example:
 python run_deepdist.py -f ./example/T1019s1.fasta -a ./example/T1019s1.aln -o ./predictors/results/test/ -m mul_class_C
 ```
 
-<h4>Case 2: run the ensemble of multiple individual deep learning models to predict distance map from a single sequence in the FASTA format</h4>
+<h4>Case 2: Use an ensemble of multiple individual deep learning models to predict distance map from a single sequence in the FASTA format</h4>
 
 ```
 Command: sh ./predictors/ensemble/pred_deepdist_fasta.sh [fasta_file] [output_folder]
@@ -100,7 +100,7 @@ sh predictors/ensemble/example/pred_deepdist_fasta_lewis.sh
 ```
 The output is stored in the output directory: `example/*fasta name*/pred_map_ensem/`
 
-<h4>Case 3: Use the deep learning model based on psudo maximum liklihood (plm) feature set to make prediction. </h4>
+<h4>Case 3: Use the deep learning model based on pseudo maximum likelihood (plm) feature set to make prediction. </h4>
 
 ```
 On a standard Linux
@@ -115,11 +115,11 @@ Note: The accuracy of the ensemble of multiple deep learning models is generally
 
 **(5) Three different ways to generate MSA input for DeepDist**
 
-1.Use DeepMSA to generate a MSA for a protein
-Download and install the [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/). This package requires to install large protein sequence databases. 
+1.Use DeepMSA to generate a MSA for a protein.
+Download and install [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/). This package requires installing large protein sequence databases. 
 
-2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against a standard protein sequence databse created by HHsuite (e.g. UniRef30) to generate MSA.
-The UniRef database created by HHsuite is much smaller than the databases used by DeepMSA. So this approach is faster than DeepMSA, but may be less senstiive for some proteins. For instance, you can download a recent UniRef database (UniRef30_2020_06_hhsuite.tar.gz) [here](http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/) as follows. 
+2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against a standard protein sequence database created by HHsuite (e.g. UniRef30) to generate MSAs.
+The UniRef database created by HHsuite is much smaller than the databases used by DeepMSA. So this approach is faster than DeepMSA, but may be less senstive for some proteins. You can download a recent UniRef database (UniRef30_2020_06_hhsuite.tar.gz) [here](http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/) as follows:
 ```
 wget http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/UniRef30_2020_06_hhsuite.tar.gz
 ```
@@ -129,7 +129,7 @@ sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist
 ```
 3.Use HHblits to search against the Big Fantastic Database ([BFD](https://bfd.mmseqs.com/)).
 The BFD database is very large. Searching a protein against BFD is slow, but more sensitive. 
-Below is an exmaple of generating a MSA from BFD:
+Below is an example of generating a MSA from BFD:
 ```
 sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist_full_path/predictors/results/T1049 /BFD_database_full_path
 ```
@@ -138,26 +138,36 @@ sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist
 
 ```
 python ./lib/mulclass2realdist.py -i [input_mulclass_prediction] -o [output_folder]
-example
+
+Example:
 python ./lib/mulclass2realdist.py -i ./example/CASP13_results/mul_class/T0949.npy -o ./predictors/results/1/
 ```
 
 **(7) Train the network from scratch**
 
 ```
-python ./lib/train_deepdist_tune_net.py [model_name] [dataset_name] [feature_file_name] [loss_function] [filter_number] [layers] [kernel_size] [outter_epoch] [inner_epoch] [feature_dir] [output_dir] [accuracy_log_dir] [weights] [index]
-example
+python ./lib/train_deepdist_tune_net.py [model_name] [dataset_name] [feature_file_name] [loss_function] [filter_number] [layers] [kernel_size] [outter_epoch] [inner_epoch] [feature_dir] [output_dir] [accuracy_log_dir] [weights] [index
+
+Example:
 python ./lib/train_deepdist_tune_net.py 'DEEPDIST_RESRC' 'DEEPDIST' 'feature_to_use_plm_v3' 'categorical_crossentropy_C' 64 20 3 70 1 [feature_dir] ./models/custom/test ./models/custom/ 1 1
 ```
-The feature dir must have followed sub-directory: cov[The folder of covariance feature, suffix ".cov"], plm[The folder of psudo maximum liklihood feature, suffix ".plm"], pre[The folder of precision feature, suffix ".pre"], other[The folder of DNCON2 features, suffix ".txt"], bin_class[The folder of contact map file, suffix ".txt"], mul_class_2_22[The folder of type 'G' multiclass distance map file, suffix ".npy"]
+The feature dir must have following sub-directories:
+- `cov`: The folder of covariance feature, suffix `.cov` 
+- `plm`:The folder of psudo maximum liklihood feature, suffix `.plm`
+- `pre`:The folder of precision feature, suffix `.pre`
+- `other`: The folder of DNCON2 features, suffix `.txt`
+- `bin_class`: The folder of contact map file, suffix `.txt`
+- `mul_class_2_22`: The folder of type 'G' multiclass distance map file, suffix `.npy`
+
 Use the command below to generate distance label from pdb file
 ```
 python ./scripts/generate_label_from_pdb.py -f [fasta_file] -p [pdb_file] -o [output folder] -t [type of multiclass distance map] 
-example
+
+Example:
 python ./scripts/generate_label_from_pdb.py -f ./example//T0949.fasta -p ./example//T0949.pdb -o ./predictors/results/label_test/ -t G
 ```
 
-Note: If you have any further questions, please post your question at this GitHub website or feel free to contact Zhiye Guo: zggc9@umsystem.edu for help.
+Note: If you have any further questions, feel free to post it in this repository or contact Zhiye Guo at zggc9@umsystem.edu for help.
 
 <h2>References</h2>
 
