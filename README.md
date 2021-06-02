@@ -115,7 +115,7 @@ Note: The accuracy of the ensemble of multiple deep learning models is generally
 
 **(5) Three different ways to generate MSA input for DeepDist**
 
-1.Use DeepMSA to generate a MSA for a protein
+1.Use DeepMSA to generate a MSA for a protein.
 Download and install [DeepMSA](https://zhanglab.dcmb.med.umich.edu/DeepMSA/). This package requires installing large protein sequence databases. 
 
 2.Use [HHblits](https://github.com/soedinglab/hh-suite) to search against a standard protein sequence database created by HHsuite (e.g. UniRef30) to generate MSAs.
