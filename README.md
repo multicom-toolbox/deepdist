@@ -29,7 +29,7 @@ sudo apt-get install tcsh (if already installed, ignore this)
 
 **(4) Configure DeepDist (required)**
 
-Use `setup_msa.py` to configure DeepDist to take a multiple sequence alignment (MSA) as input to predict distance map. `setup_msa.py` requires downloading a package of about 110 GB
+Use `setup_msa.py` to configure DeepDist to take a multiple sequence alignment (MSA) as input to predict distance map. `setup_msa.py` requires downloading a package of about 110 GB.
 Use `setup_fasta.py` to configure DeepDist to take a fasta sequence as input to predict distance map. `setup_fasta.py` requires downloading a package of about 580 GB
 
 ```
