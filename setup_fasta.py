@@ -3,11 +3,11 @@
 """
 Created on Aug 02 
 
-@author: tianqi
+@author: tianqi, zhiye
 """
 
 docstring='''
-DNCON4-setup for database and tools
+DeepDist-setup for database and tools
 
 usage: python setup_database.py
 '''
@@ -22,8 +22,8 @@ from time import sleep
 # Database version
 uniref90_info = "uniref90_01_2020"
 metaclust50_info = "2018_06"
-hhsuitedb_type = "2020_01"
-hhsuitedb_info = "UniRef30_2020_01"
+hhsuitedb_type = "2020_03"
+hhsuitedb_info = "UniRef30_2020_03"
 ebi_uniref100_info = "myg_uniref100_01_2020"
 uniref90_dir = "" #"/exports/store2/casp14/databases/deepmsa_db"
 metaclust50_dir = "" #"/exports/store2/casp14/databases/deepmsa_db"
@@ -254,6 +254,7 @@ def download_ebi_uniref100(db_tools_dir,version,db_dir=""):
     if os.path.exists("myg_uniref100") and os.path.exists("myg_uniref100"+".ssi"):
         print("\tmyg_uniref100"+" is found, skip!")
     else:
+        os.chdir(db_dir)
         if os.path.exists(version+".tar.gz"):
             os.system("rm "+version+".tar.gz")
         os.system("wget http://sysbio.rnet.missouri.edu/dncon4_db_tools/databases/"+version+".tar.gz")
@@ -263,6 +264,7 @@ def download_ebi_uniref100(db_tools_dir,version,db_dir=""):
             print("Failed to download myg_uniref100 from http://sysbio.rnet.missouri.edu/dncon4_db_tools/databases/"+version+".tar.gz")
             sys.exit(1)
         os.system("tar zxvf "+version+".tar.gz && rm "+version+".tar.gz")
+        os.chdir(ebi_ref_dir)
         retcode = subprocess.call(tools_dir+"/hmmer-3.1b2-linux-intel-x86_64/easel/miniapps/esl-sfetch --index myg_uniref100", shell=True)
         if retcode :
             print("Failed to index "+ebi_ref_dir)
@@ -337,23 +339,23 @@ if __name__ == '__main__':
         os.makedirs(temp_path+"/tmp")
 
     if sys.version_info[0] < 3:
-        intall_flag = raw_input("Intall DNCON4_db_tools to "+ temp_path +" ? (Yes/No)")
+        intall_flag = raw_input("Intall DeepDist_db_tools to "+ temp_path +" ? (Yes/No)")
         if 'Y' in intall_flag or 'y' in intall_flag:
             db_tools_dir = temp_path
         elif 'N' in intall_flag or 'n' in intall_flag:
-            custom_path = raw_input("Please input the path of DNCON4_db_tools you want to install...\n")
-            print("The DNCON4_db_tools will be installed to %s, please wait...\n"%custom_path)
+            custom_path = raw_input("Please input the path of DeepDist_db_tools you want to install...\n")
+            print("The DeepDist_db_tools will be installed to %s, please wait...\n"%custom_path)
             db_tools_dir = custom_path
         else:
             print("Input illeage! System exit!")
             sys.exit(1)
     else:
-        intall_flag = input("Intall DNCON4_db_tools to "+ temp_path +" ? (Yes/No)")
+        intall_flag = input("Intall DeepDist_db_tools to "+ temp_path +" ? (Yes/No)")
         if 'Y' in intall_flag or 'y' in intall_flag:
             db_tools_dir = temp_path
         elif 'N' in intall_flag or 'n' in intall_flag:
-            custom_path = input("Please input the path of DNCON4_db_tools you want to install...\n")
-            print("The DNCON4_db_tools will be installed to %s, please wait...\n"%custom_path)
+            custom_path = input("Please input the path of DeepDist_db_tools you want to install...\n")
+            print("The DeepDist_db_tools will be installed to %s, please wait...\n"%custom_path)
             db_tools_dir = custom_path
         else:
             print("Input illeage! System exit!")
@@ -363,7 +365,7 @@ if __name__ == '__main__':
     ##!!! Don't Change the code below##
     global_path = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(global_path):
-        print("The DNCON4 directory "+global_path+" is not existing, set the path as your unzipped DNCON4 directory")
+        print("The DeepDist directory "+global_path+" is not existing, set the path as your unzipped DeepDist directory")
         sys.exit(1)
 
     if not os.path.exists(db_tools_dir):
@@ -372,28 +374,12 @@ if __name__ == '__main__':
     db_tools_dir=os.path.abspath(db_tools_dir)
 
     # write db_dir to /installation/path.inf
-    configure_file(global_path + '/installation/', 'inf', 'dncon4_db_dir', db_tools_dir)
+    configure_file(global_path + '/installation/', 'inf', 'DeepDist_db_dir', db_tools_dir)
 
     os.chdir(global_path)
     script_path = os.path.dirname(os.path.abspath(__file__))
-    #install virtual environment
-    vir_dir = global_path+ '/env'
-    if not os.path.exists(vir_dir):
-        os.makedirs(vir_dir)
-        os.system("chmod -R 755 "+vir_dir)
-    if os.path.exists(vir_dir+"/env_vir.done"):
-        print(vir_dir+"/env_vir installed....skip")
-    else:
-        os.system("touch "+vir_dir+"/env_vir.running")
-        retcode = subprocess.call("sh "+script_path+"/installation/set_env.sh", shell=True)
-        if retcode :
-            print("Failed to set virtual environment.... ")
-            sys.exit(1)
-        os.system("mv "+vir_dir+"/env_vir.running "+vir_dir+"/env_vir.done")
-        print(vir_dir+"/env_vir installed")
 
-
-    print("Start install DNCON4_db_tools into "+db_tools_dir)
+    print("Start install DeepDist_db_tools into "+db_tools_dir)
     os.chdir(db_tools_dir)
     database_dir = db_tools_dir+"/databases"
     tools_dir = db_tools_dir+"/tools"
@@ -500,7 +486,9 @@ if __name__ == '__main__':
     else:
         os.system("touch "+install_dir+"/"+hhsuitedb_info+"_hhsuite.running")
         tool = hhsuitedb_info+"_hhsuite.tar.gz"
-        address = "http://wwwuser.gwdg.de/~compbiol/uniclust/"+hhsuitedb_type+"/"+hhsuitedb_info+"_hhsuite.tar.gz"
+        address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/databases/"+hhsuitedb_info+"_hhsuite.tar.gz"
+        if not os.path.exists(database_dir+"/"+hhsuitedb_info +'/'):
+            os.mkdir(database_dir+"/"+hhsuitedb_info +'/')
         os.chdir(database_dir+"/"+hhsuitedb_info)
         direct_download(tool, address, database_dir)
         os.system("mv "+install_dir+"/"+hhsuitedb_info+"_hhsuite.running "+install_dir+"/"+hhsuitedb_info+"_hhsuite.done")
@@ -596,22 +584,6 @@ if __name__ == '__main__':
         # os.system("mv "+install_dir+"/CCMpred.running "+install_dir+"/CCMpred.done")
         # print(install_dir+"/CCMpred installed")
 
-    # #### Download Freecontact
-    # if os.path.exists(install_dir+"/freecontact-1.0.21.done"):
-    #     print(install_dir+"/freecontact-1.0.21 installed....skip")
-    # else:
-    #     os.system("touch "+install_dir+"/freecontact-1.0.21.running")
-    #     tool = "freecontact-1.0.21.tar.gz"
-    #     address = "http://sysbio.rnet.missouri.edu/multicom_db_tools/tools/freecontact-1.0.21.tar.gz"
-    #     direct_download(tool, address, tools_dir)
-    #     os.chdir(tools_dir+"/freecontact-1.0.21")
-    #     retcode = subprocess.call("sh "+install_dir+"/P3_install_freecontact.sh &> P3_install_freecontact.log", shell=True)
-    #     if retcode :
-    #         print("Failed to install "+tools_dir+"/freecontact-1.0.21")
-    #         sys.exit(1)
-    #     os.system("mv "+install_dir+"/freecontact-1.0.21.running "+install_dir+"/freecontact-1.0.21.done")
-    #     print(install_dir+"/freecontact-1.0.21 installed")
-
     #### Download CD-HIT
     if os.path.exists(install_dir+"/cd-hit-v4.6.8-2017-1208.done"):
         print(install_dir+"/cd-hit-v4.6.8-2017-1208 installed....skip")
@@ -645,44 +617,3 @@ if __name__ == '__main__':
         direct_download(tool, address, tools_dir)
         os.system("mv "+install_dir+"/DeepMSA.running "+install_dir+"/DeepMSA.done")
         print(install_dir+"/DeepMSA installed")
-
-
-    # #### Downlaod NNCON
-    # if os.path.exists(install_dir+"/nncon1.0_64bit.done"):
-        # print(install_dir+"/nncon1.0_64bit installed....skip")
-    # else:
-        # os.system("touch "+install_dir+"/nncon1.0_64bit.running")
-        # if os.path.exists(tools_dir+"/nncon1.0_64bit"):
-            # os.system("rm -r "+tools_dir+"/nncon1.0_64bit")
-        # tool = "nncon1.0_64bit.tar.gz"
-        # address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/tools/nncon1.0_64bit.tar.gz"
-        # direct_download(tool, address, tools_dir)
-        # os.chdir(tools_dir+"/nncon1.0_64bit")
-        # os.system("ln -s "+database_dir+"/nr "+tools_dir+"/nncon1.0_64bit/nr ")
-        # retcode = subprocess.call("perl configure.pl", shell=True)
-        # if retcode :
-            # print("Failed to install "+tools_dir+"/nncon1.0_64bit")
-            # sys.exit(1)
-        # os.system("mv "+install_dir+"/nncon1.0_64bit.running "+install_dir+"/nncon1.0_64bit.done")
-        # print(install_dir+"/nncon1.0_64bit installed")
-
-    # #### Downlaod BETACON
-    # if os.path.exists(install_dir+"/betacon_64bit_standalone.done"):
-        # print(install_dir+"/betacon_64bit_standalone installed....skip")
-    # else:
-        # os.system("touch "+install_dir+"/betacon_64bit_standalone.running")
-        # if os.path.exists(tools_dir+"/betacon_64bit_standalone"):
-            # os.system("rm -r "+tools_dir+"/betacon_64bit_standalone")
-        # tool = "betacon_64bit_standalone.tar.gz"
-        # address = "http://sysbio.rnet.missouri.edu/dncon4_db_tools/tools/betacon_64bit_standalone.tar.gz"
-        # direct_download(tool, address, tools_dir)
-        # os.chdir(tools_dir+"/betacon_64bit_standalone")
-        # os.system("ln -s "+database_dir+"/uniref90 "+tools_dir+"/betacon_64bit_standalone/databases/uniref90 ")
-        # retcode = subprocess.call("perl configure.pl", shell=True)
-        # if retcode :
-            # print("Failed to install "+tools_dir+"/betacon_64bit_standalone")
-            # sys.exit(1)
-        # os.system("mv "+install_dir+"/betacon_64bit_standalone.running "+install_dir+"/betacon_64bit_standalone.done")
-        # print(install_dir+"/betacon_64bit_standalone installed")
-
-

@@ -68,7 +68,6 @@ print "Seq  : ".seq_fasta($fasta)."\n\n";
 my $id = basename($fasta, ".fasta");
 system_cmd("mkdir -p $outdir") if not -d $outdir;
 if(not -e $outdir."/".$id.".fasta"){
-	print $outdir."/".$id.fasta;
 	system_cmd("cp $fasta $outdir/");
 	system_cmd("echo \">$id\" > $outdir/$id.fasta");
 	system_cmd("echo \"".seq_fasta($fasta)."\" >> $outdir/$id.fasta");
