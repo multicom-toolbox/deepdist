@@ -4,7 +4,7 @@ DeepDist_db_dir=/storage/htc/bdm/zhiye/DNCON4_db_tools
 ## FLAG path of DeepDist database 
 uniref90_version=uniref90_01_2020
 metaclust50_version=Metaclust_2018_06
-hhsuitedb_version=UniRef30_2020_01
+hhsuitedb_version=UniRef30_2020_03
 ebi_uniref100_version=myg_uniref100_01_2020
 
 ## path of runfile script
