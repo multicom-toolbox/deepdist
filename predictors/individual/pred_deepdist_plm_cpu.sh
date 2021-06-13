@@ -14,4 +14,4 @@ db_tool_dir=/mnt/data/zhiye/Python/DNCON4_db_tools/
 printf "$global_dir\n"
 
 #################database_path fasta model outputdir method option
-python $global_dir/lib/Model_predict.py $db_tool_dir $fasta ${models_dir[@]} $output_dir 'mul_lable_R' 'ALN'
+python $global_dir/lib/Model_predict.py $db_tool_dir $fasta ${models_dir[@]} $output_dir 'mul_lable_R' 'ALN' 'None'
