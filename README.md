@@ -30,11 +30,12 @@ sudo apt-get install tcsh (if already installed, ignore this)
 **(4) Configure DeepDist (required)**
 
 Use `setup_msa.py` to configure DeepDist to take a multiple sequence alignment (MSA) as input to predict distance map. `setup_msa.py` requires downloading a package of about 110 GB.
-Use `setup_fasta.py` to configure DeepDist to take a fasta sequence as input to predict distance map. `setup_fasta.py` requires downloading a package of about 580 GB
+Use `setup_fasta.py` to configure DeepDist to take a fasta sequence as input to predict distance map. `setup_fasta.py` requires downloading a package of about 580 GB. We recommend running `setup_msa.py` due to the smaller space requirements but you will need to generate MSAs yourself.
 
 ```
 Step 1:
-python setup_msa.py (recommend) or python setup_fasta.py
+Option 1: python setup_msa.py
+Option 2: python setup_fasta.py
 
 Step 2:
 python configure.py
@@ -43,7 +44,7 @@ Step 3:
 sh ./installation/set_env.sh
 ```
 
-**(4) Examples for predicting distance maps using DeepDist**
+**(5) Examples for predicting distance maps using DeepDist**
 
 <h4>Case 1: Use an ensemble of multiple individual deep learning models to predict distance map from a MSA using different commands</h4>
 
@@ -126,13 +127,13 @@ wget http://wwwuser.gwdg.de/~compbiol/uniclust/2020_06/UniRef30_2020_06_hhsuite.
 ```
 Below is an example of generating a MSA from the database.
 ```
-sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist_full_path/predictors/results/T1049 /full_path/UniRef30_2020_06_hhsuite_database
+sh ./scripts/hhblits.sh T1049  ./example/T1049.fasta ./predictors/results/T1049 /full_path/UniRef30_2020_06_hhsuite_database
 ```
 3.Use HHblits to search against the Big Fantastic Database ([BFD](https://bfd.mmseqs.com/)).
 The BFD database is very large. Searching a protein against BFD is slow, but more sensitive. 
 Below is an example of generating a MSA from BFD:
 ```
-sh ./scripts/hhblits.sh T1049  /DeepDist_full_path/example/T1049.fasta /DeepDist_full_path/predictors/results/T1049 /BFD_database_full_path
+sh ./scripts/hhblits.sh T1049  ./example/T1049.fasta ./predictors/results/T1049 /BFD_full_path
 ```
 
 **(6) Convert a multi-classification distance map into a real-value distance map**
