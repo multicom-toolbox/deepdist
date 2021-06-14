@@ -32,7 +32,7 @@ def is_dir(dirname):
         return dirname
 
 def is_file(filename):
-    '''Checks if a file is an invalid file'''
+    '''Check if a file is an invalid file'''
     if not os.path.exists(filename):
         msg = '{0} does not exist'.format(filename)
         raise argparse.ArgumentTypeError(msg)
@@ -162,22 +162,22 @@ script_path = global_path+'/scripts/'
 target = os.path.basename(fasta)
 target = re.sub('\.fasta','',target)
 
-###########################################
-# Generating four set of features
-###########################################
+##########################################################
+# Generating four set of features and alignment
+##########################################################
 if not os.path.exists(fasta):
     print('Cannot find fasta file: '+fasta)
     sys.exit(1)
 
 if not os.path.exists(outdir):
     os.makedirs(outdir)
-    print('Create output folder path:'+outdir)
+    print('Create output folder path:', outdir)
 if os.path.exists(outdir+'/X-'+target+'.txt') and os.path.exists(outdir+'/'+target+'.cov') and os.path.exists(outdir+'/'+target+'.plm') and os.path.exists(outdir+'/'+target+'.pre'):
-    print('Features already exist... Skipped')
+    print('Features already exist... skipped')
 else:
     # Step 1: Generate alignment
     if os.path.exists(outdir+'/alignment/'+target+'.aln') and os.path.getsize(outdir+'/alignment/'+target+'.aln') > 0:
-        print('Alignment already generated... Skipped')
+        print('Alignment already generated... skipped')
     else:
         if hhsuitedb_dir.split('/')[-1] =='':
             hhsuitedb_name = hhsuitedb_dir.split('/')[-2]
@@ -197,9 +197,9 @@ else:
         else:
             print('Alignment generation failed')
 
-    # Step 1: Generate other features
+    # Step 2: Generate OTHER
     if os.path.exists(outdir+'/X-'+target+'.txt') and os.path.getsize(outdir+'/X-'+target+'.txt') > 0:
-        print('DNCON2 features already generated... Skipped')
+        print('DNCON2 features already generated... skipped')
     else:
         os.system('perl '+script_path+'/generate-other.pl '+db_tool_dir+' '+fasta+' '+outdir+' '+uniref90_dir+'/uniref90')
         if os.path.exists(outdir+'/X-'+target+'.txt') and os.path.getsize(outdir+'/X-'+target+'.txt') > 0:
@@ -207,9 +207,9 @@ else:
         else:
             print('DNCON2 feature generation failed')
 
-    # Step 3: Generate cov
+    # Step 3: Generate COV
     if os.path.exists(outdir+'/'+target+'.cov') and os.path.getsize(outdir+'/'+target+'.cov') > 0:
-        print('COV already generated... Skipped')
+        print('COV already generated... skipped')
     else:
         os.system(script_path+'/cov21stats '+outdir+'/alignment/'+target+'.aln '+outdir+'/'+target+'.cov')
         if os.path.exists(outdir+'/'+target+'.cov') and os.path.getsize(outdir+'/'+target+'.cov') > 0:
@@ -219,7 +219,7 @@ else:
 
     # Step 4: Generate PLM
     if os.path.exists(outdir+'/ccmpred/'+target+'.plm') and os.path.getsize(outdir+'/ccmpred/'+target+'.plm') > 0:
-        print('PLM already generated... Skipped')
+        print('PLM already generated... skipped')
         os.system('mv '+outdir+'/ccmpred/'+target+'.plm '+outdir)
     elif os.path.exists(outdir+'/'+target+'.plm') and os.path.getsize(outdir+'/'+target+'.plm') > 0:
         print('PLM already generated')
@@ -228,7 +228,7 @@ else:
 
     # Step 5: Generate PRE
     if os.path.exists(outdir+'/'+target+'.pre') and os.path.getsize(outdir+'/'+target+'.pre') > 0:
-        print('PRE already generated... Skipped')
+        print('PRE already generated... skipped')
     else:
         os.system(script_path+'/calNf_ly '+outdir+'/alignment/'+target+'.aln 0.8 > '+outdir+'/'+target+'.weight')
         os.system('python -W ignore '+script_path+'/generate_pre.py '+outdir+'/alignment/'+target+'.aln '+outdir+'/'+target)
@@ -254,7 +254,7 @@ if length == 0:
 selected_list = {}
 selected_list[target] = length
 
-print('Total Number to predict: ', len(selected_list))
+print('Total number to predict: ', len(selected_list))
 
 iter_num = 0
 if isinstance(CV_dir, str) == True:
@@ -444,9 +444,9 @@ for index in range(iter_num):
                 real_dmap_file = '%s/%s.txt' % (real_dist_dir, key)
                 np.savetxt(real_dmap_file, real_dmap_dist, fmt='%.4f')
 
-###########################################
+##########################################################
 # Using CONEVA to evaluate
-###########################################
+##########################################################
 if iter_num == 1: # This is the single model predictor
     if 'mul_lable' not in predict_method:
         cmap_dir= '%s/pred_map%d/'%(preddir, index)
@@ -528,8 +528,8 @@ if iter_num == 1: # This is the single model predictor
             myfile.write(final_line)
         os.system('rm -f rr.txt')
     else:
-        print ('Final pred_map filepath: ', cmap_dir)
-        print ('Final rr       filepath: ', rr_dir)
+        print('Final pred_map filepath: ', cmap_dir)
+        print('Final rr       filepath: ', rr_dir)
 elif iter_num == 4: # This is the multiple model predictor, now with 4 models
     if 'mul_lable' not in predict_method:
         cmap1dir = '%s/pred_map0/'%(preddir)
@@ -547,7 +547,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
     chkdirs(sum_real_dir)
     for key in selected_list:
         seq_name = key
-        print('process ', seq_name)
+        print('Processing ', seq_name)
         sum_map_filename = sum_cmap_dir + seq_name + '.txt'
         real_dist_filename = sum_real_dir + seq_name + '.txt'
         cmap1 = np.loadtxt(cmap1dir + seq_name + '.txt', dtype=np.float32)
@@ -651,8 +651,8 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
             myfile.write(final_line)
         os.system('rm -f rr.txt')                    
     else:
-        print ('Final pred_map filepath: ', cmap_dir)
-        print ('Final rr       filepath: ', rr_dir)
+        print('Final pred_map filepath: ', cmap_dir)
+        print('Final rr       filepath: ', rr_dir)
     if 'mul_lable' in predict_method:
         cmap1dir = '%s/pred_map_mul_class_0/'%(preddir)
         cmap2dir = '%s/pred_map_mul_class_1/'%(preddir)
@@ -669,7 +669,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         chkdirs(sum_npy_dir)
         for key in selected_list:
             seq_name = key
-            print('process ', seq_name)
+            print('Processing ', seq_name)
             sum_map_filename = sum_cmap_dir + seq_name + '.txt'
             cmap1 = np.loadtxt(cmap1dir + seq_name + '.txt', dtype=np.float32)
             cmap2 = np.loadtxt(cmap2dir + seq_name + '.txt', dtype=np.float32)
@@ -720,7 +720,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
                     if os.path.exists(pdb_file):
                         subprocess.call('perl '+lib_path+'/coneva-lite.pl -rr '+rr_dir+'/'+key+'.rr -pdb '+ pdb_file + ' >> '+rr_dir+'/rr.txt',shell=True)
                     else:
-                        print('Please check the pdb file: %s'%pdb_file)
+                        print('Please check the pdb file: ', pdb_file)
             title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '
             with open(final_acc_reprot, 'a') as myfile:
                 myfile.write(title_line)
@@ -762,6 +762,6 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
                 myfile.write(final_line)
             os.system('rm -f rr.txt')                                           
         else:
-            print ('Final pred_map filepath: ', cmap_dir)
-            print ('Final rr       filepath: ', rr_dir)
-print ('DeepDist has finished running\n')
+            print('Final pred_map filepath: ', cmap_dir)
+            print('Final rr       filepath: ', rr_dir)
+print('DeepDist has finished running\n')
