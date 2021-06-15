@@ -260,10 +260,10 @@ for index in range(iter_num):
         DNCON4 = model_from_json(json_string)
 
     if os.path.exists(model_weight_out_best):
-        print('Loading existing weights: ', model_weight_out_best, '\n')
+        print('Loading existing weights: ', model_weight_out_best)
         DNCON4.load_weights(model_weight_out_best)
     else:
-        print('Please check the best weights\n')
+        print('Please check the best weights')
     preddir = outdir
     if 'mul_class' in predict_method:
         model_predict= '%s/pred_map%d/'%(preddir, index)
@@ -304,7 +304,7 @@ for index in range(iter_num):
             maximum_length = value
         if len(p1) < 1:
             continue
-        print('Predicting %s %d' %(key, value))
+        print('Predicting %s %d' %(key, value), '\n')
 
         if 'other' in feature_list:
             if len(reject_fea_file) == 1:
