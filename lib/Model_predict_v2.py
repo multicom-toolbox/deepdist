@@ -136,7 +136,7 @@ else:
     print('[db_tool_dir] [fasta_file] [alignment_file] [model_dir] [output_dir] [predict_method]')
     sys.exit(1)
 
-print('Model dir: ', CV_dir)
+print('Model directory: ', CV_dir)
 print('Predict method: ', predict_method)
 only_predict_flag = True # if do not have label set True
 lib_path = sys.path[0]
@@ -162,7 +162,7 @@ target = re.sub('\.fasta','',target)
 # Generating four set of features
 ##########################################################
 if not os.path.exists(fasta):
-    print('Cannot find fasta file:', fasta)
+    print('Cannot find fasta file: ', fasta)
     sys.exit(1)
 
 if not os.path.exists(outdir):

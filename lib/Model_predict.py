@@ -142,7 +142,7 @@ else:
 
 print('Model directory: ', CV_dir)
 print('Predict method: ', predict_method)
-only_predict_flag = True # if do not have lable set True
+only_predict_flag = True # if do not have label set True
 lib_path = sys.path[0]
 global_path = os.path.dirname(sys.path[0])
 print('Global path: ', global_path)
