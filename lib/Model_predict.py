@@ -136,7 +136,7 @@ elif len(sys.argv) == 8:
     option = str(sys.argv[6])
     serve_name = str(sys.argv[7])
 else:
-    print('Please input the right parameters: \n')
+    print('Please input the right parameters:\n')
     print('[db_tool_dir] [fasta_file] [model_dir] [output_dir] [predict_method]')
     sys.exit(1)
 
@@ -166,7 +166,7 @@ target = re.sub('\.fasta','',target)
 # Generating four set of features and alignment
 ##########################################################
 if not os.path.exists(fasta):
-    print('Cannot find fasta file: '+fasta)
+    print('Cannot find fasta file: ', fasta)
     sys.exit(1)
 
 if not os.path.exists(outdir):

@@ -132,7 +132,7 @@ elif len(sys.argv) == 7:
     outdir = os.path.abspath(sys.argv[5])
     predict_method = str(sys.argv[6])
 else:
-    print('Please input the right parameters\n')
+    print('Please input the right parameters:\n')
     print('[db_tool_dir] [fasta_file] [alignment_file] [model_dir] [output_dir] [predict_method]')
     sys.exit(1)
 
