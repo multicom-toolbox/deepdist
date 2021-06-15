@@ -222,7 +222,7 @@ else:
         print('PLM already generated... skipped')
         os.system('mv '+outdir+'/ccmpred/'+target+'.plm '+outdir)
     elif os.path.exists(outdir+'/'+target+'.plm') and os.path.getsize(outdir+'/'+target+'.plm') > 0:
-        print('PLM already generated')
+        print('PLM already generated... skipped')
     else:
         print('PLM generation failed')
 
