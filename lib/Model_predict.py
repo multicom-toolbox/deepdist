@@ -757,7 +757,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
             topL2_acc  /= count
             topL_acc   /= count
             top2L_acc  /= count
-            final_line = 'AVERAGE                       %.2f     %.2f     %.2     %.2f     %.2f     %.2f    \n'%(top5_acc, topL10_acc, topL5_acc, topL2_acc, topL_acc, top2L_acc)
+            final_line = 'AVERAGE                       %.2f     %.2f     %.2f     %.2f     %.2f     %.2f    \n'%(top5_acc, topL10_acc, topL5_acc, topL2_acc, topL_acc, top2L_acc)
             print(final_line)
             with open(final_acc_reprot, 'a') as myfile:
                 myfile.write(final_line)
