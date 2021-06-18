@@ -62,7 +62,7 @@ class InstanceNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
@@ -82,7 +82,7 @@ class RowNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
@@ -102,7 +102,7 @@ class ColumNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
