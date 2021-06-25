@@ -86,5 +86,3 @@ if __name__=="__main__":
 	script_file = '%s %s/lib/Model_predict_v2.py %s %s %s %s %s %s %s %s %s'%(vir_env, GLOABL_Path, db_tool_dir, fasta, aln_file, 
 		models_dir[0], models_dir[1], models_dir[2],models_dir[3],outdir, method)
 	os.system(script_file)
-
-

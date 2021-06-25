@@ -71,3 +71,4 @@ if __name__ == "__main__":
     #    os.makedirs(savedir)
     inputfasta=sys.argv[1]
     compute_fasta(inputfasta,updir,savedir)
+    

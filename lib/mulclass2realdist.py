@@ -69,3 +69,4 @@ if __name__=="__main__":
     dist = npy2distmap(npy)
     dist_file = outdir + '/' + name + '.txt'
     np.savetxt(dist_file, dist, fmt='%.4f')
+    

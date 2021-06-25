@@ -5,7 +5,7 @@ Created on Wed Feb 22 21:47:26 2017
 @author: Zhiye
 '''
 import sys
-import os,glob,re
+import os, glob, re
 import time
 
 sys.path.insert(0, sys.path[0])
@@ -15,7 +15,7 @@ from mulclass2realdist import *
 
 import subprocess
 import numpy as np
-from keras.models import model_from_json,load_model, Sequential, Model
+from keras.models import model_from_json, load_model, Sequential, Model
 from keras.utils import CustomObjectScope
 from random import randint
 import keras.backend as K
@@ -115,9 +115,6 @@ class ColumNormalization(Layer):
 
 # DATABASE_FLAG
 uniref90_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/uniref90_01_2020'
-metaclust50_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/Metaclust_2018_06'
-hhsuitedb_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/UniRef30_2020_01'
-ebi_uniref100_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/myg_uniref100_01_2020'
 # End of configure
 
 if len(sys.argv) == 10:
@@ -159,7 +156,7 @@ save_mul_real = True
 db_tool_dir = os.path.abspath(sys.argv[1])
 script_path = f'{global_path}/scripts/'
 target = os.path.basename(fasta)
-target = re.sub('\.fasta','',target)
+target = re.sub('\.fasta', '', target)
 
 ##########################################################
 # Generating four set of features
@@ -435,12 +432,12 @@ if iter_num == 1: # This is the single model predictor
     for filename in glob.glob(f'{cmap_dir}/*.txt'):
         id = os.path.basename(filename)
         id = re.sub('\.txt$', '', id)
-        f = open(f'{rr_dir}/{id}.raw','w')
-        cmap = np.loadtxt(filename,dtype='float32')
+        f = open(f'{rr_dir}/{id}.raw', 'w')
+        cmap = np.loadtxt(filename, dtype='float32')
         L = cmap.shape[0]
-        for i in range(0,L):
-            for j in range(i+1,L):
-                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]}\n')
+        for i in range(0, L):
+            for j in range(i+1, L):
+                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
         f.close()
         os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
         os.system(f'cat {id}.raw >> {id}.rr')
@@ -562,11 +559,11 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         id = os.path.basename(filename)
         id = re.sub('\.txt$', '', id)
         f = open(f'{rr_dir}/{id}.raw', 'w')
-        cmap = np.loadtxt(filename,dtype='float32')
+        cmap = np.loadtxt(filename, dtype='float32')
         L = cmap.shape[0]
-        for i in range(0,L):
-            for j in range(i+1,L):
-                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]}\n')
+        for i in range(0, L):
+            for j in range(i+1, L):
+                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
         f.close()
         os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
         os.system(f'cat {id}.raw >> {id}.rr')
@@ -672,12 +669,12 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         for filename in glob.glob(f'{cmap_dir}/*.txt'):
             id = os.path.basename(filename)
             id = re.sub('\.txt$', '', id)
-            f = open(f'{rr_dir}/{id}.raw','w')
-            cmap = np.loadtxt(filename,dtype='float32')
+            f = open(f'{rr_dir}/{id}.raw', 'w')
+            cmap = np.loadtxt(filename, dtype='float32')
             L = cmap.shape[0]
-            for i in range(0,L):
-                for j in range(i+1,L):
-                    f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]}\n')
+            for i in range(0, L):
+                for j in range(i+1, L):
+                    f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
             f.close()
             os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
             os.system(f'cat {id}.raw >> {id}.rr')
@@ -697,7 +694,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
                 for i in range(len(pdb_name)):
                     pdb_file = path_of_pdb + pdb_name[i]
                     if os.path.exists(pdb_file):
-                        subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb  {pdb_file} >> {rr_dir}/rr.txt' ,shell=True)
+                        subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb  {pdb_file} >> {rr_dir}/rr.txt' , shell=True)
                     else:
                         print(f'Please check the pdb file: {pdb_file}')
             title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '

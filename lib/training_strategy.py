@@ -62,3 +62,4 @@ if __name__ == '__main__':
     elif 'centos' in current_os_name.split('-'): #on lewis or multicom
       sysflag='lewis'
     print(gpu_schedul_strategy(sysflag))
+    

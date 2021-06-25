@@ -307,3 +307,4 @@ if __name__=="__main__":
                     y = y.strip()
                     y = re.sub("\.rr \(precision\)"," (example) ",y)
                     print(" {0}\n {1}".format(x, y))
+                    

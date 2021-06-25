@@ -59,3 +59,4 @@ if __name__=="__main__":
     new_npz_file = args.output
 
     trans_npy_into_npz(input_file, npz_file, new_npz_file)
+    

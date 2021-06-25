@@ -71,3 +71,4 @@ if __name__ == '__main__':
     pre=precision.computeapre(msafile,weightfile,savefile+".pre")
     #pre.astype('float32').tofile(savefile+".pre")
     #step2 finished
+    
