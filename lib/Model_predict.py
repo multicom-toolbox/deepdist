@@ -465,7 +465,7 @@ if iter_num == 1: # This is the single model predictor
         L = cmap.shape[0]
         for i in range(0, L):
             for j in range(i+1, L):
-                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
+                f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
         f.close()
         os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
         os.system(f'cat {id}.raw >> {id}.rr')
@@ -588,7 +588,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         L = cmap.shape[0]
         for i in range(0, L):
             for j in range(i+1, L):
-                f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
+                f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
         f.close()
         os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
         os.system(f'cat {id}.raw >> {id}.rr')
@@ -699,7 +699,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
             L = cmap.shape[0]
             for i in range(0, L):
                 for j in range(i+1, L):
-                    f.write(f'{i+1} {j+1} 0 8 {cmap[i][j]:.4f}\n')
+                    f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
             f.close()
             os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
             os.system(f'cat {id}.raw >> {id}.rr')
