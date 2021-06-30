@@ -306,7 +306,7 @@ for index in range(iter_num):
 
         if 'other' in feature_list:
             if len(reject_fea_file) == 1:
-                selected_list_2D_other = get_x_2D_from_this_list_pred(p1, path_of_X, maximum_length,dist_string, OTHER, value)
+                selected_list_2D_other = get_x_2D_from_this_list_pred(p1, path_of_X, maximum_length, dist_string, OTHER, value)
                 if type(selected_list_2D_other) == bool:
                     continue
                 DNCON4_prediction_other = DNCON4.predict([selected_list_2D_other], batch_size= 1)  

@@ -695,7 +695,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
             id = os.path.basename(filename)
             id = re.sub('\.txt$', '', id)
             f = open(f'{rr_dir}/{id}.raw', 'w')
-            cmap = np.loadtxt(filename,dtype='float32')
+            cmap = np.loadtxt(filename, dtype='float32')
             L = cmap.shape[0]
             for i in range(0, L):
                 for j in range(i+1, L):
