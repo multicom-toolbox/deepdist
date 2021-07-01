@@ -347,4 +347,3 @@ def DeepDistRes_with_paras_2D(kernel_size,feature_2D_num, filters,nb_layers,opt,
     DeepDist_RES.compile(loss=loss, metrics=['accuracy'], optimizer=opt)
     DeepDist_RES.summary()
     return DeepDist_RES
-

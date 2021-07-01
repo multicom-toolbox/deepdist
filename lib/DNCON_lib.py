@@ -1689,4 +1689,3 @@ def print_detailed_evaluations_4(dict_l, PL5, PL2, PL, P, Y):
   # print("   Avg                           %6s        %6s %6s %6s    %.4f    %.4f    %.4f" % (avg_nc, avg_pc_l5, avg_pc_l2, avg_pc_1l, avg_prec_l5, avg_prec_l2, avg_prec_1l))
   # print ("")
   return (avg_prec_l5, avg_prec_l2, avg_prec_1l, avg_mcc_l5, avg_mcc_l2, avg_mcc_1l, avg_recall_l5, avg_recall_l2, avg_recall_1l, avg_f1_l5, avg_f1_l2, avg_f1_1l)
-

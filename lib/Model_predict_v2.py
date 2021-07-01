@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
 Created on Wed Feb 22 21:47:26 2017
@@ -6,7 +5,7 @@ Created on Wed Feb 22 21:47:26 2017
 @author: Zhiye
 """
 import sys
-import os,glob,re
+import os, glob, re
 import time
 
 sys.path.insert(0, sys.path[0])
@@ -16,7 +15,7 @@ from mulclass2realdist import *
 
 import subprocess
 import numpy as np
-from keras.models import model_from_json,load_model, Sequential, Model
+from keras.models import model_from_json, load_model, Sequential, Model
 from keras.utils import CustomObjectScope
 from random import randint
 import keras.backend as K
@@ -26,23 +25,23 @@ from keras.engine.topology import Layer
 from keras import metrics, initializers
 
 def is_dir(dirname):
-    """Checks if a path is an actual directory"""
+    '''Check if a path is an actual directory'''
     if not os.path.isdir(dirname):
-        msg = "{0} is not a directory".format(dirname)
+        msg = f'{dirname} is not a directory'
         raise argparse.ArgumentTypeError(msg)
     else:
         return dirname
 
 def is_file(filename):
-    """Checks if a file is an invalid file"""
+    '''Check if a file is an invalid file'''
     if not os.path.exists(filename):
-        msg = "{0} doesn't exist".format(filename)
+        msg = f'{filename} does not exist'
         raise argparse.ArgumentTypeError(msg)
     else:
         return filename
 
 def chkdirs(fn):
-    '''create folder if not exists'''
+    '''Create a folder if it doesn't already exist'''
     dn = os.path.dirname(fn)
     if not os.path.exists(dn): os.makedirs(dn)
 
@@ -63,7 +62,7 @@ class InstanceNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
@@ -83,7 +82,7 @@ class RowNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
@@ -103,7 +102,7 @@ class ColumNormalization(Layer):
     def build(self, input_shape):
         dim = input_shape[self.axis]
         if dim is None:
-            raise ValueError('Axis '+str(self.axis)+' of input tensor should have a defined dimension but the layer received an input with shape '+str(input_shape)+ '.')
+            raise ValueError(f'Axis {self.axis} of input tensor should have a defined dimension but the layer received an input with shape {input_shape}')
         shape = (dim,)
 
         self.gamma = self.add_weight(shape=shape, name='gamma', initializer=initializers.random_normal(1.0, 0.02))
@@ -114,16 +113,15 @@ class ColumNormalization(Layer):
         mean, var = tf.nn.moments(inputs, axes=[2], keep_dims=True)
         return K.batch_normalization(inputs, mean, var, self.beta, self.gamma, self.epsilon)
 
-#DATABASE_FLAG
+# DATABASE_FLAG
 uniref90_dir ='/storage/htc/bdm/zhiye/DNCON4_db_tools//databases/uniref90_01_2020'
-#######end of configure
-
+# End of configure
 
 if len(sys.argv) == 10:
     db_tool_dir = os.path.abspath(sys.argv[1])
     fasta = os.path.abspath(sys.argv[2])
     aln_file = os.path.abspath(sys.argv[3])
-    CV_dir = [sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]] # ensemble use four model average
+    CV_dir = [sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]] # ensemble uses four model average
     outdir = os.path.abspath(sys.argv[8])
     predict_method = str(sys.argv[9])  
 elif len(sys.argv) == 7:
@@ -134,95 +132,93 @@ elif len(sys.argv) == 7:
     outdir = os.path.abspath(sys.argv[5])
     predict_method = str(sys.argv[6])
 else:
-    print('please input the right parameters\n')
-    print("[db_tool_dir] [fasta_file] [alignment_file] [model_dir] [output_dir] [predict_method]")
+    print('Please input the right parameters:\n')
+    print('[db_tool_dir] [fasta_file] [alignment_file] [model_dir] [output_dir] [predict_method]')
     sys.exit(1)
 
-print("Model dir:", CV_dir)
-print("predict method:", predict_method)
-only_predict_flag = True # if do not have lable set True
+print(f'Model directory: {CV_dir}')
+print(f'Predict method: {predict_method}')
+only_predict_flag = True # if do not have label set True
 lib_path = sys.path[0]
-GLOABL_Path = os.path.dirname(sys.path[0])
-print("Find gloabl path :", GLOABL_Path)
+global_path = os.path.dirname(sys.path[0])
+print(f'Global path: {global_path}')
 path_of_X = outdir
 path_of_Y = outdir
 
-feature_list = 'other'# ['combine', 'combine_all2d', 'other', 'ensemble']  # combine will output three map and it combine, other just output one pred
-data_list_choose = 'test'# ['train', 'test', 'train_sub', 'all']
-Maximum_length = 2000  # casp12 700
-dist_string = "80"
+feature_list = 'other' # ['combine', 'combine_all2d', 'other', 'ensemble']  # 'combine' will output three map and combines them, 'other' outputs one pred
+data_list_choose = 'test' # ['train', 'test', 'train_sub', 'all']
+maximum_length = 2000  # casp12 700
+dist_string = '80'
 loss_function = 'binary_crossentropy'
-if_use_binsize = False #False True
+if_use_binsize = False # False True
 save_mul_real = True
 
 db_tool_dir = os.path.abspath(sys.argv[1])
-script_path = GLOABL_Path+'/scripts/'
+script_path = f'{global_path}/scripts/'
 target = os.path.basename(fasta)
-target = re.sub("\.fasta","",target)
+target = re.sub('\.fasta', '', target)
 
-########
+##########################################################
+# Generating four set of features
+##########################################################
 if not os.path.exists(fasta):
-    print("Cannot fasta file:"+fasta)
+    print(f'Cannot find fasta file: {fasta}')
     sys.exit(1)
 
 if not os.path.exists(outdir):
     os.makedirs(outdir)
-    print("Create output folder path:"+outdir)
-if os.path.exists(outdir+"/X-"+target+".txt") and os.path.exists(outdir+"/"+target+".cov") and os.path.exists(outdir+"/"+target+".plm") and os.path.exists(outdir+"/"+target+".pre"):
-    print("All features exists, skip!")
+    print(f'Create output folder path: {outdir}')
+if os.path.exists(f'{outdir}/X-{target}.txt') and os.path.exists(f'{outdir}/{target}.cov') and os.path.exists(f'{outdir}/{target}.plm') and os.path.exists(f'{outdir}/{target}.pre'):
+    print('Features already exist... skipped')
 else:
-    #step1: copy alignment
-    aln_dir = outdir+"/alignment/"
+    # Step1: Copy alignment
+    aln_dir = f'{outdir}/alignment/'
     chkdirs(aln_dir)
-    os.system('cp %s %s'%(aln_file, aln_dir))
-    
-    #step2: generate other features
-    if os.path.exists(outdir+"/X-"+target+".txt") and os.path.getsize(outdir+"/X-"+target+".txt") > 0:
-        print("DNCON2 features generated.....skip")
+    os.system(f'cp {aln_file} {aln_dir}')
+
+    # Step 2: Generate OTHER
+    if os.path.exists(f'{outdir}/X-{target}.txt') and os.path.getsize(f'{outdir}/X-{target}.txt') > 0:
+        print('DNCON2 features already generated... skipped')
     else:
-        os.system("perl "+script_path+"/generate-other.pl "+db_tool_dir+" "+fasta+" "+outdir+" "+uniref90_dir+"/uniref90")
-        if os.path.exists(outdir+"/X-"+target+".txt") and os.path.getsize(outdir+"/X-"+target+".txt") > 0:
-            print("DNCON2 features generated successfully....")
+        os.system(f'perl {script_path}/generate-other.pl {db_tool_dir} {fasta} {outdir} {uniref90_dir}/uniref90')
+        if os.path.exists(f'{outdir}/X-{target}.txt') and os.path.getsize(f'{outdir}/X-{target}.txt') > 0:
+            print('DNCON2 features generated successfully')
         else:
-            print("DNCON2 features generation failed....")
+            print('DNCON2 feature generation failed')
 
-    #step3: generate cov
-    if os.path.exists(outdir+"/"+target+".cov") and os.path.getsize(outdir+"/"+target+".cov") > 0:
-        print("cov generated.....skip")
+    # Step 3: Generate COV
+    if os.path.exists(f'{outdir}/{target}.cov') and os.path.getsize(f'{outdir}/{target}.cov') > 0:
+        print('COV already generated... skipped')
     else:
-        os.system(script_path+"/cov21stats "+outdir+"/alignment/"+target+".aln "+outdir+"/"+target+".cov")
-        if os.path.exists(outdir+"/"+target+".cov") and os.path.getsize(outdir+"/"+target+".cov") > 0:
-            print("cov generated successfully....")
+        os.system(f'{script_path}/cov21stats {outdir}/alignment/{target}.aln {outdir}/{target}.cov')
+        if os.path.exists(f'{outdir}/{target}.cov') and os.path.getsize(f'{outdir}/{target}.cov') > 0:
+            print('COV generated successfully')
         else:
-            print("cov generation failed....")
+            print('COV generation failed')
 
-    #step4: generate plm
-    if os.path.exists(outdir+"/ccmpred/"+target+".plm") and os.path.getsize(outdir+"/ccmpred/"+target+".plm") > 0:
-        print("plm generated.....skip")
-        os.system("mv "+outdir+"/ccmpred/"+target+".plm "+outdir)
-    elif os.path.exists(outdir+"/"+target+".plm") and os.path.getsize(outdir+"/"+target+".plm") > 0:
-        print("plm generated.....skip")
+    # Step 4: Generate PLM
+    if os.path.exists(f'{outdir}/ccmpred/{target}.plm') and os.path.getsize(f'{outdir}/ccmpred/{target}.plm') > 0:
+        print('PLM already generated... skipped')
+        os.system(f'mv {outdir}/ccmpred/{target}.plm {outdir}')
+    elif os.path.exists(f'{outdir}/{target}.plm') and os.path.getsize(f'{outdir}/{target}.plm') > 0:
+        print('PLM already generated... skipped')
     else:
-        print("plm generation failed....")
+        print('PLM generation failed')
 
-    #step5: generate pre
-    if os.path.exists(outdir+"/"+target+".pre") and os.path.getsize(outdir+"/"+target+".pre") > 0:
-        print("pre generated.....skip")
+    # Step 5: Generate PRE
+    if os.path.exists(f'{outdir}/{target}.pre') and os.path.getsize(f'{outdir}/{target}.pre') > 0:
+        print('PRE already generated... skipped')
     else:
-        os.system(script_path+"/calNf_ly "+outdir+"/alignment/"+target+".aln 0.8 > "+outdir+"/"+target+".weight")
-        os.system("python -W ignore "+script_path+"/generate_pre.py "+outdir+"/alignment/"+target+".aln "+outdir+"/"+target)
-        os.system("rm "+outdir+"/"+target+".weight")
-        if os.path.exists(outdir+"/"+target+".pre") and os.path.getsize(outdir+"/"+target+".pre") > 0:
-            print("pre generated successfully....")
+        os.system(f'{script_path}/calNf_ly {outdir}/alignment/{target}.aln 0.8 > {outdir}/{target}.weight')
+        os.system(f'python -W ignore {script_path}/generate_pre.py {outdir}/alignment/{target}.aln {outdir}/{target}')
+        os.system(f'rm {outdir}/{target}.weight')
+        if os.path.exists(f'{outdir}/{target}.pre') and os.path.getsize(f'{outdir}/{target}.pre') > 0:
+            print('PRE generated successfully')
         else:
-            print("pre generation failed....")
-##########
+            print('PRE generation failed')
 
-# gpu_schedul_strategy("local", allow_growth=True)
+# gpu_schedul_strategy('local', allow_growth=True)
 
-print("\n######################################\n佛祖保佑，永不迨机，永无bug，精度九十九\n######################################\n")
-
-##
 length = 0
 f = open(fasta, 'r')
 for line in f.readlines():
@@ -231,11 +227,11 @@ for line in f.readlines():
     else:
         length = len(line.strip('\n'))
 if length == 0:
-    print("Read fasta: %s length wrong!"%fasta)
+    print(f'Read fasta: {fasta} length wrong!')
 selected_list = {}
 selected_list[target] = length
 
-print('Total Number to predict = ',str(len(selected_list)))
+print(f'Total number to predict: {len(selected_list)}')
 
 iter_num = 0
 if isinstance(CV_dir, str) == True:
@@ -250,38 +246,38 @@ for index in range(iter_num):
     reject_fea_path = sub_cv_dir + '/'
     reject_fea_file = getFileName(reject_fea_path, '.txt')
 
-    model_out= sub_cv_dir + '/' + getFileName(sub_cv_dir, '.json')[0]
-    model_weight_out_best = sub_cv_dir + '/' + getFileName(sub_cv_dir, '.h5')[0]
-    model_weight_top10 = "%s/model_weights_top/" % (sub_cv_dir)
+    model_out= f'{sub_cv_dir}/{getFileName(sub_cv_dir, ".json")[0]}'
+    model_weight_out_best = f'{sub_cv_dir}/{getFileName(sub_cv_dir, ".h5")[0]}'
+    model_weight_top10 = f'{sub_cv_dir}/model_weights_top/'
 
-    # pred_history_out = "%s/predict%d.acc_history" % (outdir, index) 
-    # with open(pred_history_out, "a") as myfile:
+    # pred_history_out = '%s/predict%d.acc_history' % (outdir, index) 
+    # with open(pred_history_out, 'a') as myfile:
     #     myfile.write(time.strftime('%Y-%m-%d %H:%M:%S\n',time.localtime(time.time())))
     with CustomObjectScope({'InstanceNormalization': InstanceNormalization, 'RowNormalization': RowNormalization, 'ColumNormalization': ColumNormalization, 'tf':tf}):
         json_string = open(model_out).read()
         DNCON4 = model_from_json(json_string)
 
     if os.path.exists(model_weight_out_best):
-        print("######## Loading existing weights ",model_weight_out_best)
+        print(f'Loading existing weights: {model_weight_out_best}')
         DNCON4.load_weights(model_weight_out_best)
     else:
-        print("Please check the best weights\n")
+        print('Please check the best weights')
     preddir = outdir
     if 'mul_class' in predict_method:
-        model_predict= "%s/pred_map%d/"%(preddir, index)
+        model_predict= f'{preddir}/pred_map{index}/'
         chkdirs(model_predict)
-        mul_class_dir= "%s/mul_class/"%(model_predict)
+        mul_class_dir= f'{model_predict}/mul_class/'
         chkdirs(mul_class_dir)
     elif 'real_dist' in predict_method: 
-        model_predict= "%s/pred_map%d/"%(preddir, index)
+        model_predict= f'{preddir}/pred_map{index}/'
         chkdirs(model_predict)
-        real_dist_dir= "%s/real_dist/"%(model_predict)
+        real_dist_dir= f'{model_predict}/real_dist/'
         chkdirs(real_dist_dir)
     elif 'mul_lable' in  predict_method:
-        real_dist_bin_dir = "%s/pred_map_real_dist_%d/"%(preddir, index)
-        mul_class_bin_dir = "%s/pred_map_mul_class_%d/"%(preddir, index)
-        real_dist_dir= "%s/real_dist/"%(real_dist_bin_dir)
-        mul_class_dir = "%s/mul_class/"%(mul_class_bin_dir)
+        real_dist_bin_dir = f'{preddir}/pred_map_real_dist_{index}/'
+        mul_class_bin_dir = f'{preddir}/pred_map_mul_class_{index}/'
+        real_dist_dir= f'{real_dist_bin_dir}/real_dist/'
+        mul_class_dir = f'{mul_class_bin_dir}/mul_class/'
         model_predict = real_dist_bin_dir
         chkdirs(real_dist_bin_dir)
         chkdirs(mul_class_bin_dir)
@@ -301,16 +297,16 @@ for index in range(iter_num):
         value = selected_list[key]
         p1 = {key: value}
         if if_use_binsize:
-            Maximum_length = Maximum_length
+            maximum_length = maximum_length
         else:
-            Maximum_length = value
+            maximum_length = value
         if len(p1) < 1:
             continue
-        print("start predict %s %d" %(key, value))
+        print(f'Predicting {key} {value}\n')
 
         if 'other' in feature_list:
             if len(reject_fea_file) == 1:
-                selected_list_2D_other = get_x_2D_from_this_list_pred(p1, path_of_X, Maximum_length,dist_string, OTHER, value)
+                selected_list_2D_other = get_x_2D_from_this_list_pred(p1, path_of_X, maximum_length, dist_string, OTHER, value)
                 if type(selected_list_2D_other) == bool:
                     continue
                 DNCON4_prediction_other = DNCON4.predict([selected_list_2D_other], batch_size= 1)  
@@ -318,8 +314,8 @@ for index in range(iter_num):
                 pred_temp = []
                 bool_flag = False
                 for fea_num in range(len(OTHER)):
-                    temp = get_x_2D_from_this_list_pred(p1, path_of_X, Maximum_length, dist_string, reject_fea_file[fea_num], value)
-                    # print("selected_list_2D.shape: ",temp.shape)
+                    temp = get_x_2D_from_this_list_pred(p1, path_of_X, maximum_length, dist_string, reject_fea_file[fea_num], value)
+                    # print('selected_list_2D.shape: ',temp.shape)
                     if type(temp) == bool:
                         bool_flag= True
                     pred_temp.append(temp)
@@ -356,16 +352,16 @@ for index in range(iter_num):
                 DNCON4_prediction_real_dist[DNCON4_prediction_real_dist<=0] = 1
                 DNCON4_prediction_dist = np.copy(DNCON4_prediction_real_dist)
                 DNCON4_prediction_dist = 1/DNCON4_prediction_dist
-                # DNCON4_prediction_other = (DNCON4_prediction_mul_class.reshape(Maximum_length, Maximum_length) + DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))/2.0
-                real_dist_bin = (DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))
-                mul_class_bin = (DNCON4_prediction_mul_class.reshape(Maximum_length, Maximum_length))
+                # DNCON4_prediction_other = (DNCON4_prediction_mul_class.reshape(maximum_length, maximum_length) + DNCON4_prediction_dist.reshape(maximum_length, maximum_length))/2.0
+                real_dist_bin = (DNCON4_prediction_dist.reshape(maximum_length, maximum_length))
+                mul_class_bin = (DNCON4_prediction_mul_class.reshape(maximum_length, maximum_length))
                 Map_UpTrans = (np.triu(real_dist_bin, 1).T + np.tril(real_dist_bin, -1))/2
                 Map_UandL = (np.triu(real_dist_bin) + np.tril(real_dist_bin).T)/2
                 real_dist_bin = Map_UandL + Map_UpTrans
                 Map_UpTrans = (np.triu(mul_class_bin, 1).T + np.tril(mul_class_bin, -1))/2
                 Map_UandL = (np.triu(mul_class_bin) + np.tril(mul_class_bin).T)/2
                 mul_class_bin = Map_UandL + Map_UpTrans
-                DNCON4_prediction_other = (DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))
+                DNCON4_prediction_other = (DNCON4_prediction_dist.reshape(maximum_length, maximum_length))
                 DNCON4_prediction_dist = DNCON4_prediction_real_dist
             elif predict_method == 'mul_lable_R':
                 mul_class = DNCON4_prediction_other[0]
@@ -375,80 +371,82 @@ for index in range(iter_num):
                 DNCON4_prediction_real_dist[DNCON4_prediction_real_dist<=0] = 1
                 DNCON4_prediction_dist = np.copy(DNCON4_prediction_real_dist)
                 DNCON4_prediction_dist = 1/DNCON4_prediction_dist
-                # DNCON4_prediction_other = (DNCON4_prediction_mul_class.reshape(Maximum_length, Maximum_length) + DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))/2.0
-                real_dist_bin = (DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))
-                mul_class_bin = (DNCON4_prediction_mul_class.reshape(Maximum_length, Maximum_length))
+                # DNCON4_prediction_other = (DNCON4_prediction_mul_class.reshape(maximum_length, maximum_length) + DNCON4_prediction_dist.reshape(maximum_length, maximum_length))/2.0
+                real_dist_bin = (DNCON4_prediction_dist.reshape(maximum_length, maximum_length))
+                mul_class_bin = (DNCON4_prediction_mul_class.reshape(maximum_length, maximum_length))
                 Map_UpTrans = (np.triu(real_dist_bin, 1).T + np.tril(real_dist_bin, -1))/2
                 Map_UandL = (np.triu(real_dist_bin) + np.tril(real_dist_bin).T)/2
                 real_dist_bin = Map_UandL + Map_UpTrans
                 Map_UpTrans = (np.triu(mul_class_bin, 1).T + np.tril(mul_class_bin, -1))/2
                 Map_UandL = (np.triu(mul_class_bin) + np.tril(mul_class_bin).T)/2
                 mul_class_bin = Map_UandL + Map_UpTrans
-                DNCON4_prediction_other = (DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length))
+                DNCON4_prediction_other = (DNCON4_prediction_dist.reshape(maximum_length, maximum_length))
                 DNCON4_prediction_dist = DNCON4_prediction_real_dist
 
-            CMAP = DNCON4_prediction_other.reshape(Maximum_length, Maximum_length)
+            CMAP = DNCON4_prediction_other.reshape(maximum_length, maximum_length)
             Map_UpTrans = (np.triu(CMAP, 1).T + np.tril(CMAP, -1))/2
             Map_UandL = (np.triu(CMAP) + np.tril(CMAP).T)/2
             real_cmap_other = Map_UandL + Map_UpTrans
-            other_cmap_file = "%s/%s.txt" % (model_predict, key)
+            other_cmap_file = f'{model_predict}/{key}.txt'
             np.savetxt(other_cmap_file, real_cmap_other, fmt='%.4f')
             # real_cmap_other = CMAP
             if 'mul_lable' in predict_method and save_mul_real == True:
-                CMAP = DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length)
+                CMAP = DNCON4_prediction_dist.reshape(maximum_length, maximum_length)
                 real_dmap_dist = (CMAP + CMAP.T)/2
-                real_dmap_file = "%s/%s.txt" % (real_dist_dir, key)
-                realdist_cmap_file = "%s/%s.txt" % (real_dist_bin_dir, key)
-                mulclass_cmap_file = "%s/%s.txt" % (mul_class_bin_dir, key)
-                mulclass_file = "%s/%s.npy" % (mul_class_dir, key)
+                real_dmap_file = f'{real_dist_dir}/{key}.txt'
+                realdist_cmap_file = f'{real_dist_bin_dir}/{key}.txt'
+                mulclass_cmap_file = f'{mul_class_bin_dir}/{key}.txt'
+                mulclass_file = f'{mul_class_dir}/{key}.npy'
                 np.savetxt(real_dmap_file, real_dmap_dist, fmt='%.4f')
                 np.savetxt(realdist_cmap_file, real_dist_bin, fmt='%.4f')
                 np.savetxt(mulclass_cmap_file, mul_class_bin, fmt='%.4f')
                 np.save(mulclass_file, mul_class)
             elif 'mul_class' in predict_method:
-                CMAP = DNCON4_prediction_dist.reshape(1, Maximum_length, Maximum_length, -1)
+                CMAP = DNCON4_prediction_dist.reshape(1, maximum_length, maximum_length, -1)
                 real_dmap_dist = (CMAP + CMAP.transpose(0,2,1,3))/2
-                other_dmap_file = "%s/%s.npy" % (mul_class_dir,key)
+                other_dmap_file = f'{mul_class_dir}/{key}.npy'
                 np.save(other_dmap_file, real_dmap_dist)
             elif predict_method == 'dist_error':
-                CMAP = DNCON4_prediction_error.reshape(Maximum_length, Maximum_length)
+                CMAP = DNCON4_prediction_error.reshape(maximum_length, maximum_length)
                 dist_error_map = (CMAP+CMAP.T)/2
-                error_file = "%s/%s.error" % (real_dist_dir, key)
+                error_file = f'{real_dist_dir}/{key}.error'
                 np.savetxt(error_file, dist_error_map, fmt='%.4f')
             elif predict_method == 'real_dist':
-                CMAP = DNCON4_prediction_dist.reshape(Maximum_length, Maximum_length)
+                CMAP = DNCON4_prediction_dist.reshape(maximum_length, maximum_length)
                 real_dmap_dist = (CMAP + CMAP.T)/2
-                real_dmap_file = "%s/%s.txt" % (real_dist_dir, key)
+                real_dmap_file = f'{real_dist_dir}/{key}.txt'
                 np.savetxt(real_dmap_file, real_dmap_dist, fmt='%.4f')
 
-### use coneva to evaluate
-if iter_num == 1: # this is single model predictor
+##########################################################
+# Using CONEVA to evaluate
+##########################################################
+if iter_num == 1: # This is the single model predictor
     if 'mul_lable' not in predict_method:
-        cmap_dir= "%s/pred_map%d/"%(preddir, index)
+        cmap_dir= f'{preddir}/pred_map{index}/'
     else:
-        cmap_dir= "%s/pred_map_real_dist_%d/"%(preddir, index)
+        cmap_dir= f'{preddir}/pred_map_real_dist_{index}/'
 
-    rr_dir = cmap_dir+'/rr/'
+    rr_dir = f'{cmap_dir}/rr/'
     chkdirs(rr_dir)
     os.chdir(rr_dir)
-    for filename in glob.glob(cmap_dir+'/*.txt'):
+    for filename in glob.glob(f'{cmap_dir}/*.txt'):
         id = os.path.basename(filename)
         id = re.sub('\.txt$', '', id)
-        f = open(rr_dir+"/"+id+".raw",'w')
-        cmap = np.loadtxt(filename,dtype='float32')
+        f = open(f'{rr_dir}/{id}.raw', 'w')
+        cmap = np.loadtxt(filename, dtype='float32')
         L = cmap.shape[0]
-        for i in range(0,L):
-            for j in range(i+1,L):
-                f.write(str(i+1)+" "+str(j+1)+" 0 8 "+str(cmap[i][j])+"\n")
+        for i in range(0, L):
+            for j in range(i+1, L):
+                f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
         f.close()
-        os.system('egrep -v \"^>\" '+ fasta +'  > '+id+'.rr')
-        os.system('cat '+id+'.raw >> '+id+'.rr')
-        os.system('rm -f '+id+'.raw')
+        os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
+        os.system(f'cat {id}.raw >> {id}.rr')
+        os.system(f'rm -f {id}.raw')
     if only_predict_flag == False:
-        print("Use coneva to evaluated. It may take 1 or 2 minutes.....\n")
+        print('Running CONEVA... May take 1 or 2 minutes\n')
         emoji_flag = False
         for key in selected_list:
-            # print(key+" evaluated")print
+            # print(key+' evaluated')print
             if emoji_flag:
                 emoji_flag=False
                 print('\r', '\\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))', end='', flush=True)
@@ -459,29 +457,29 @@ if iter_num == 1: # this is single model predictor
             for i in range(len(pdb_name)):
                 pdb_file = path_of_pdb + pdb_name[i]
                 if os.path.exists(pdb_file):
-                    subprocess.call("perl "+lib_path+"/coneva-lite.pl -rr "+rr_dir+"/"+key+".rr -pdb "+ pdb_file + " >> "+rr_dir+"/rr.txt",shell=True)
+                    subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb {pdb_file} >> {rr_dir}/rr.txt', shell=True)
                 else:
-                    print("Please check the pdb file: %s"%pdb_file)
-        title_line = "\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    "
-        with open(final_acc_reprot, "a") as myfile:
+                    print(f'Please check the pdb file: {pdb_file}')
+        title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '
+        with open(final_acc_reprot, 'a') as myfile:
             myfile.write(title_line)
             myfile.write('\n')
         print(title_line)
         
         top5_acc = topL10_acc = topL5_acc = topL2_acc = topL_acc = top2L_acc = 0 
         count = 0
-        for line in open(rr_dir+"/rr.txt",'r'):
+        for line in open(f'{rr_dir}/rr.txt', 'r'):
             line = line.rstrip()
-            if(".pdb (precision)" in line):
+            if('.pdb (precision)' in line):
                 arr = line.split()
                 print(arr[0])  
-                with open(final_acc_reprot, "a") as myfile:
+                with open(final_acc_reprot, 'a') as myfile:
                     myfile.write(arr[0])
                     myfile.write('\n')
-            if(".rr (precision)" in line):
+            if('.rr (precision)' in line):
                 count += 1
                 print(line, end=' ')
-                with open(final_acc_reprot, "a") as myfile:
+                with open(final_acc_reprot, 'a') as myfile:
                     myfile.write(line)
                 _array = line.split(' ')
                 array = [x for x in _array if x !='']
@@ -497,56 +495,56 @@ if iter_num == 1: # this is single model predictor
         topL2_acc  /= count
         topL_acc   /= count
         top2L_acc  /= count
-        final_line = "AVERAGE                       %.2f     %.2f     %.2f     %.2f     %.2f     %.2f    \n"%(top5_acc, topL10_acc, topL5_acc, topL2_acc, topL_acc, top2L_acc)
+        final_line = f'AVERAGE                       {top5_acc:.2f}     {topL10_acc:.2f}    {topL5_acc:.2f}     {topL2_acc:.2f}     {topL_acc:.2f}     {top2L_acc:.2f}    \n'
         print(final_line)
-        with open(final_acc_reprot, "a") as myfile:
+        with open(final_acc_reprot, 'a') as myfile:
             myfile.write(final_line)
         os.system('rm -f rr.txt')
     else:
-        print ("Final pred_map filepath: %s"%(cmap_dir))
-        print ("Final rr       filepath: %s"%(rr_dir))
-elif iter_num == 4: # this is multiple model predictor, now modele number is 4
+        print(f'Final pred_map filepath: {cmap_dir}')
+        print(f'Final rr       filepath: {rr_dir}')
+elif iter_num == 4: # This is the multiple model predictor, now with 4 models
     if 'mul_lable' not in predict_method:
-        cmap1dir = "%s/pred_map0/"%(preddir)
-        cmap2dir = "%s/pred_map1/"%(preddir)
-        cmap3dir = "%s/pred_map2/"%(preddir)
-        cmap4dir = "%s/pred_map3/"%(preddir)
+        cmap1dir = f'{preddir}/pred_map0/'
+        cmap2dir = f'{preddir}/pred_map1/'
+        cmap3dir = f'{preddir}/pred_map2/'
+        cmap4dir = f'{preddir}/pred_map3/'
     else:
-        cmap1dir = "%s/pred_map_real_dist_0/"%(preddir)
-        cmap2dir = "%s/pred_map_real_dist_1/"%(preddir)
-        cmap3dir = "%s/pred_map_real_dist_2/"%(preddir)
-        cmap4dir = "%s/pred_map_real_dist_3/"%(preddir)
-    sum_cmap_dir = "%s/pred_map_ensem/"%(preddir)
-    sum_real_dir = "%s/real_dist/"%(sum_cmap_dir)
+        cmap1dir = f'{preddir}/pred_map_real_dist_0/'
+        cmap2dir = f'{preddir}/pred_map_real_dist_1/'
+        cmap3dir = f'{preddir}/pred_map_real_dist_2/'
+        cmap4dir = f'{preddir}/pred_map_real_dist_3/'
+    sum_cmap_dir = f'{preddir}/pred_map_ensem/'
+    sum_real_dir = f'{sum_cmap_dir}/real_dist/'
     chkdirs(sum_cmap_dir)
     chkdirs(sum_real_dir)
     for key in selected_list:
         seq_name = key
-        print('process ', seq_name)
-        sum_map_filename = sum_cmap_dir + seq_name + '.txt'
-        real_dist_filename = sum_real_dir + seq_name + '.txt'
-        cmap1 = np.loadtxt(cmap1dir + seq_name + ".txt", dtype=np.float32)
-        cmap2 = np.loadtxt(cmap2dir + seq_name + ".txt", dtype=np.float32)
-        cmap3 = np.loadtxt(cmap3dir + seq_name + ".txt", dtype=np.float32)
-        cmap4 = np.loadtxt(cmap4dir + seq_name + ".txt", dtype=np.float32)
+        print(f'Processing {seq_name}')
+        sum_map_filename = f'{sum_cmap_dir}{seq_name}.txt'
+        real_dist_filename = f'{sum_real_dir}{seq_name}.txt'
+        cmap1 = np.loadtxt(f'{cmap1dir}{seq_name}.txt', dtype=np.float32)
+        cmap2 = np.loadtxt(f'{cmap2dir}{seq_name}.txt', dtype=np.float32)
+        cmap3 = np.loadtxt(f'{cmap3dir}{seq_name}.txt', dtype=np.float32)
+        cmap4 = np.loadtxt(f'{cmap4dir}{seq_name}.txt', dtype=np.float32)
         sum_map = (cmap1 * 0.22 + cmap2 * 0.34 + cmap3 * 0.22 + cmap4 * 0.22)
         real_dist = 1/(sum_map+1e-10)
         np.savetxt(sum_map_filename, sum_map, fmt='%.4f')
         np.savetxt(real_dist_filename, real_dist, fmt='%.4f')
     if 'mul_class' in predict_method:
-        npy1dir = "%s/pred_map0/mul_class/"%(preddir)
-        npy2dir = "%s/pred_map1/mul_class/"%(preddir)
-        npy3dir = "%s/pred_map2/mul_class/"%(preddir)
-        npy4dir = "%s/pred_map3/mul_class/"%(preddir)
-        sum_npy_dir = "%s/pred_map_ensem/mul_class/"%(preddir)
+        npy1dir = f'{preddir}/pred_map0/mul_class/'
+        npy2dir = f'{preddir}/pred_map1/mul_class/'
+        npy3dir = f'{preddir}/pred_map2/mul_class/'
+        npy4dir = f'{preddir}/pred_map3/mul_class/'
+        sum_npy_dir = f'{preddir}/pred_map_ensem/mul_class/'
         chkdirs(sum_npy_dir)        
         for key in selected_list:
             seq_name = key
-            sum_npy_filename = sum_npy_dir + seq_name + '.npy'
-            npy1 = np.load(npy1dir + seq_name + ".npy")
-            npy2 = np.load(npy2dir + seq_name + ".npy")
-            npy3 = np.load(npy3dir + seq_name + ".npy")
-            npy4 = np.load(npy4dir + seq_name + ".npy")
+            sum_npy_filename = f'{sum_npy_dir}{seq_name}.npy'
+            npy1 = np.load(f'{npy1dir}{seq_name}.npy')
+            npy2 = np.load(f'{npy2dir}{seq_name}.npy')
+            npy3 = np.load(f'{npy3dir}{seq_name}.npy')
+            npy4 = np.load(f'{npy4dir}{seq_name}.npy')
             sum_npy = (npy1 * 0.22 + npy2 * 0.34 + npy3 * 0.22 + npy4 * 0.22)
             np.save(sum_npy_filename, sum_npy)
         sum_multiclass = np.squeeze(np.load(sum_npy_filename))
@@ -554,27 +552,27 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
         np.savetxt(real_dist_filename, real_dist, fmt='%.4f')
 
     cmap_dir= sum_cmap_dir
-    rr_dir = cmap_dir+'/rr/'
+    rr_dir = f'{cmap_dir}/rr/'
     chkdirs(rr_dir)
     os.chdir(rr_dir)
-    for filename in glob.glob(cmap_dir+'/*.txt'):
+    for filename in glob.glob(f'{cmap_dir}/*.txt'):
         id = os.path.basename(filename)
         id = re.sub('\.txt$', '', id)
-        f = open(rr_dir+"/"+id+".raw",'w')
-        cmap = np.loadtxt(filename,dtype='float32')
+        f = open(f'{rr_dir}/{id}.raw', 'w')
+        cmap = np.loadtxt(filename, dtype='float32')
         L = cmap.shape[0]
-        for i in range(0,L):
-            for j in range(i+1,L):
-                f.write(str(i+1)+" "+str(j+1)+" 0 8 "+str(cmap[i][j])+"\n")
+        for i in range(0, L):
+            for j in range(i+1, L):
+                f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
         f.close()
-        os.system('egrep -v \"^>\" '+ fasta +'  > '+id+'.rr')
-        os.system('cat '+id+'.raw >> '+id+'.rr')
-        os.system('rm -f '+id+'.raw')
+        os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
+        os.system(f'cat {id}.raw >> {id}.rr')
+        os.system(f'rm -f {id}.raw')
     if only_predict_flag == False:
-        print("Use coneva to evaluated. It may take 1 or 2 minutes.....\n")
+        print('Running CONEVA... May take 1 or 2 minutes\n')
         emoji_flag = False
         for key in selected_list:
-            # print(key+" evaluated")print
+            # print(key+' evaluated')print
             if emoji_flag:
                 emoji_flag=False
                 print('\r', '\\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))', end='', flush=True)
@@ -585,29 +583,29 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
             for i in range(len(pdb_name)):
                 pdb_file = path_of_pdb + pdb_name[i]
                 if os.path.exists(pdb_file):
-                    subprocess.call("perl "+lib_path+"/coneva-lite.pl -rr "+rr_dir+"/"+key+".rr -pdb "+ pdb_file + " >> "+rr_dir+"/rr.txt",shell=True)
+                    subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb  {pdb_file} >> {rr_dir}/rr.txt', shell=True)
                 else:
-                    print("Please check the pdb file: %s"%pdb_file)
-        title_line = "\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    "
-        with open(final_acc_reprot, "a") as myfile:
+                    print(f'Please check the pdb file: {pdb_file}')
+        title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '
+        with open(final_acc_reprot, 'a') as myfile:
             myfile.write(title_line)
             myfile.write('\n')
         print(title_line)
         
         top5_acc = topL10_acc = topL5_acc = topL2_acc = topL_acc = top2L_acc = 0 
         count = 0
-        for line in open(rr_dir+"/rr.txt",'r'):
+        for line in open(f'{rr_dir}/rr.txt', 'r'):
             line = line.rstrip()
-            if(".pdb (precision)" in line):
+            if('.pdb (precision)' in line):
                 arr = line.split()
                 print(arr[0])  
-                with open(final_acc_reprot, "a") as myfile:
+                with open(final_acc_reprot, 'a') as myfile:
                     myfile.write(arr[0])
                     myfile.write('\n')
-            if(".rr (precision)" in line):
+            if('.rr (precision)' in line):
                 count += 1
                 print(line, end=' ')
-                with open(final_acc_reprot, "a") as myfile:
+                with open(final_acc_reprot, 'a') as myfile:
                     myfile.write(line)
                 _array = line.split(' ')
                 array = [x for x in _array if x !='']
@@ -623,69 +621,69 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
         topL2_acc  /= count
         topL_acc   /= count
         top2L_acc  /= count
-        final_line = "AVERAGE                       %.2f     %.2f     %.2f     %.2f     %.2f     %.2f    \n"%(top5_acc, topL10_acc, topL5_acc, topL2_acc, topL_acc, top2L_acc)
+        final_line = f'AVERAGE                       {top5_acc:.2f}     {topL10_acc:.2f}     {topL5_acc:.2f}     {topL2_acc:.2f}     {topL_acc:.2f}     {top2L_acc:.2f}    \n'
         print(final_line)
-        with open(final_acc_reprot, "a") as myfile:
+        with open(final_acc_reprot, 'a') as myfile:
             myfile.write(final_line)
         os.system('rm -f rr.txt')                    
     else:
-        print ("Final pred_map filepath: %s"%(cmap_dir))
-        print ("Final rr       filepath: %s"%(rr_dir))
+        print(f'Final pred_map filepath: {cmap_dir}')
+        print(f'Final rr       filepath: {rr_dir}')
     if 'mul_lable' in predict_method:
-        cmap1dir = "%s/pred_map_mul_class_0/"%(preddir)
-        cmap2dir = "%s/pred_map_mul_class_1/"%(preddir)
-        cmap3dir = "%s/pred_map_mul_class_2/"%(preddir)
-        cmap4dir = "%s/pred_map_mul_class_3/"%(preddir)
-        sum_cmap_dir = "%s/pred_map_mul_class_ensem/"%(preddir)
+        cmap1dir = f'{preddir}/pred_map_mul_class_0/'
+        cmap2dir = f'{preddir}/pred_map_mul_class_1/'
+        cmap3dir = f'{preddir}/pred_map_mul_class_2/'
+        cmap4dir = f'{preddir}/pred_map_mul_class_3/'
+        sum_cmap_dir = f'{preddir}/pred_map_mul_class_ensem/'
 
-        npy1dir = "%s/pred_map_mul_class_0/mul_class/"%(preddir)
-        npy2dir = "%s/pred_map_mul_class_1/mul_class/"%(preddir)
-        npy3dir = "%s/pred_map_mul_class_2/mul_class/"%(preddir)
-        npy4dir = "%s/pred_map_mul_class_3/mul_class/"%(preddir)
-        sum_npy_dir = "%s/pred_map_mul_class_ensem/mul_class/"%(preddir)
+        npy1dir = f'{preddir}/pred_map_mul_class_0/mul_class/'
+        npy2dir = f'{preddir}/pred_map_mul_class_1/mul_class/'
+        npy3dir = f'{preddir}/pred_map_mul_class_2/mul_class/'
+        npy4dir = f'{preddir}/pred_map_mul_class_3/mul_class/'
+        sum_npy_dir = f'{preddir}/pred_map_mul_class_ensem/mul_class/'
         chkdirs(sum_cmap_dir)
         chkdirs(sum_npy_dir)
         for key in selected_list:
             seq_name = key
-            print('process ', seq_name)
-            sum_map_filename = sum_cmap_dir + seq_name + '.txt'
-            cmap1 = np.loadtxt(cmap1dir + seq_name + ".txt", dtype=np.float32)
-            cmap2 = np.loadtxt(cmap2dir + seq_name + ".txt", dtype=np.float32)
-            cmap3 = np.loadtxt(cmap3dir + seq_name + ".txt", dtype=np.float32)
-            cmap4 = np.loadtxt(cmap4dir + seq_name + ".txt", dtype=np.float32)
+            print(f'Processing {seq_name}')
+            sum_map_filename = f'{sum_cmap_dir}{seq_name}.txt'
+            cmap1 = np.loadtxt(f'{cmap1dir}{seq_name}.txt', dtype=np.float32)
+            cmap2 = np.loadtxt(f'{cmap2dir}{seq_name}.txt', dtype=np.float32)
+            cmap3 = np.loadtxt(f'{cmap3dir}{seq_name}.txt', dtype=np.float32)
+            cmap4 = np.loadtxt(f'{cmap4dir}{seq_name}.txt', dtype=np.float32)
             sum_map = (cmap1 * 0.22 + cmap2 * 0.34 + cmap3 * 0.22 + cmap4 * 0.22)
             np.savetxt(sum_map_filename, sum_map, fmt='%.4f')
 
-            sum_npy_filename = sum_npy_dir + seq_name + '.npy'
-            npy1 = np.load(npy1dir + seq_name + ".npy")
-            npy2 = np.load(npy2dir + seq_name + ".npy")
-            npy3 = np.load(npy3dir + seq_name + ".npy")
-            npy4 = np.load(npy4dir + seq_name + ".npy")
+            sum_npy_filename = f'{sum_npy_dir}{seq_name}.npy'
+            npy1 = np.load(f'{npy1dir}{seq_name}.npy')
+            npy2 = np.load(f'{npy2dir}{seq_name}.npy')
+            npy3 = np.load(f'{npy3dir}{seq_name}.npy')
+            npy4 = np.load(f'{npy4dir}{seq_name}.npy')
             sum_npy = (npy1 * 0.22 + npy2 * 0.34 + npy3 * 0.22 + npy4 * 0.22)
             np.save(sum_npy_filename, sum_npy)
         
         cmap_dir= sum_cmap_dir
-        rr_dir = cmap_dir+'/rr/'
+        rr_dir = f'{cmap_dir}/rr/'
         chkdirs(rr_dir)
         os.chdir(rr_dir)
-        for filename in glob.glob(cmap_dir+'/*.txt'):
+        for filename in glob.glob(f'{cmap_dir}/*.txt'):
             id = os.path.basename(filename)
             id = re.sub('\.txt$', '', id)
-            f = open(rr_dir+"/"+id+".raw",'w')
-            cmap = np.loadtxt(filename,dtype='float32')
+            f = open(f'{rr_dir}/{id}.raw', 'w')
+            cmap = np.loadtxt(filename, dtype='float32')
             L = cmap.shape[0]
-            for i in range(0,L):
-                for j in range(i+1,L):
-                    f.write(str(i+1)+" "+str(j+1)+" 0 8 "+str(cmap[i][j])+"\n")
+            for i in range(0, L):
+                for j in range(i+1, L):
+                    f.write(f'{i+1} {j+1} 0 8 {str(cmap[i][j])}\n')
             f.close()
-            os.system('egrep -v \"^>\" '+ fasta +'  > '+id+'.rr')
-            os.system('cat '+id+'.raw >> '+id+'.rr')
-            os.system('rm -f '+id+'.raw')
+            os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
+            os.system(f'cat {id}.raw >> {id}.rr')
+            os.system(f'rm -f {id}.raw')
         if only_predict_flag == False:
-            print("Use coneva to evaluated. It may take 1 or 2 minutes.....\n")
+            print('Running CONEVA... May take 1 or 2 minutes\n')
             emoji_flag = False
             for key in selected_list:
-                # print(key+" evaluated")print
+                # print(key+' evaluated')print
                 if emoji_flag:
                     emoji_flag=False
                     print('\r', '\\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))', end='', flush=True)
@@ -696,29 +694,29 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
                 for i in range(len(pdb_name)):
                     pdb_file = path_of_pdb + pdb_name[i]
                     if os.path.exists(pdb_file):
-                        subprocess.call("perl "+lib_path+"/coneva-lite.pl -rr "+rr_dir+"/"+key+".rr -pdb "+ pdb_file + " >> "+rr_dir+"/rr.txt",shell=True)
+                        subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb  {pdb_file} >> {rr_dir}/rr.txt' , shell=True)
                     else:
-                        print("Please check the pdb file: %s"%pdb_file)
-            title_line = "\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    "
-            with open(final_acc_reprot, "a") as myfile:
+                        print(f'Please check the pdb file: {pdb_file}')
+            title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '
+            with open(final_acc_reprot, 'a') as myfile:
                 myfile.write(title_line)
                 myfile.write('\n')
             print(title_line)
             
             top5_acc = topL10_acc = topL5_acc = topL2_acc = topL_acc = top2L_acc = 0 
             count = 0
-            for line in open(rr_dir+"/rr.txt",'r'):
+            for line in open(f'{rr_dir}/rr.txt', 'r'):
                 line = line.rstrip()
-                if(".pdb (precision)" in line):
+                if('.pdb (precision)' in line):
                     arr = line.split()
                     print(arr[0])  
-                    with open(final_acc_reprot, "a") as myfile:
+                    with open(final_acc_reprot, 'a') as myfile:
                         myfile.write(arr[0])
                         myfile.write('\n')
-                if(".rr (precision)" in line):
+                if('.rr (precision)' in line):
                     count += 1
                     print(line, end=' ')
-                    with open(final_acc_reprot, "a") as myfile:
+                    with open(final_acc_reprot, 'a') as myfile:
                         myfile.write(line)
                     _array = line.split(' ')
                     array = [x for x in _array if x !='']
@@ -734,12 +732,13 @@ elif iter_num == 4: # this is multiple model predictor, now modele number is 4
             topL2_acc  /= count
             topL_acc   /= count
             top2L_acc  /= count
-            final_line = "AVERAGE                       %.2f     %.2f     %.2f     %.2f     %.2f     %.2f    \n"%(top5_acc, topL10_acc, topL5_acc, topL2_acc, topL_acc, top2L_acc)
+            final_line = f'AVERAGE                       {top5_acc:.2f}     {topL10_acc:.2f}     {topL5_acc:.2f}     {topL2_acc:.2f}     {topL_acc:.2f}     {top2L_acc:.2f}    \n'
             print(final_line)
-            with open(final_acc_reprot, "a") as myfile:
+            with open(final_acc_reprot, 'a') as myfile:
                 myfile.write(final_line)
             os.system('rm -f rr.txt')                                           
         else:
-            print ("Final pred_map filepath: %s"%(cmap_dir))
-            print ("Final rr       filepath: %s"%(rr_dir))
-print ("END, Have Fun!\n")
+            print(f'Final pred_map filepath: {cmap_dir}')
+            print(f'Final rr       filepath: {rr_dir}')
+
+print('DeepDist has finished running\n')

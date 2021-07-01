@@ -526,5 +526,3 @@ if __name__ == '__main__':
         direct_download(tool, address, tools_dir)
         os.system("mv "+install_dir+"/DeepAlign1.0.running "+install_dir+"/DeepAlign1.0.done")
         print(install_dir+"/DeepAlign1.0 installed")
-
-
