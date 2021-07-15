@@ -142,7 +142,7 @@ if len(sys.argv) == 11:
     fasta = os.path.abspath(sys.argv[2])
     CV_dir = [sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]] # ensemble use four model average
     outdir = os.path.abspath(sys.argv[7])
-    predict_method = str(sys.argv[8])  # bin_class real_dist_limited16 real_dist_scaled mul_class dist_error real_dist
+    predict_method = str(sys.argv[8]) # bin_class real_dist_limited16 real_dist_scaled mul_class dist_error real_dist
     option = str(sys.argv[9])
     serve_name = str(sys.argv[10])
 elif len(sys.argv) == 8:
@@ -166,9 +166,9 @@ print(f'Global path: {global_path}')
 path_of_X = outdir
 path_of_Y = outdir
 
-feature_list = 'other' # ['combine', 'combine_all2d', 'other', 'ensemble']  # 'combine' will output three map and combines them, 'other' outputs one pred
+feature_list = 'other' # ['combine', 'combine_all2d', 'other', 'ensemble'] 'combine' will output three map and combines them, 'other' outputs one pred
 data_list_choose = 'test' # ['train', 'test', 'train_sub', 'all']
-maximum_length = 2000  # casp12 700
+maximum_length = 2000 # casp12 700
 dist_string = '80'
 loss_function = 'binary_crossentropy'
 if_use_binsize = False # False True
@@ -318,7 +318,7 @@ for index in range(iter_num):
         chkdirs(model_predict)
         real_dist_dir= f'{model_predict}/real_dist/'
         chkdirs(real_dist_dir)
-    elif 'mul_lable' in  predict_method:
+    elif 'mul_lable' in predict_method:
         real_dist_bin_dir = f'{preddir}/pred_map_real_dist_{index}/'
         mul_class_bin_dir = f'{preddir}/pred_map_mul_class_{index}/'
         real_dist_dir= f'{real_dist_bin_dir}/real_dist/'
@@ -354,7 +354,7 @@ for index in range(iter_num):
                 selected_list_2D_other = get_x_2D_from_this_list_pred(p1, path_of_X, maximum_length, dist_string, OTHER, value)
                 if type(selected_list_2D_other) == bool:
                     continue
-                DNCON4_prediction_other = DNCON4.predict([selected_list_2D_other], batch_size= 1)  
+                DNCON4_prediction_other = DNCON4.predict([selected_list_2D_other], batch_size= 1)
             elif len(reject_fea_file)>=2:
                 pred_temp = []
                 bool_flag = False
@@ -508,7 +508,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         npy3dir = f'{preddir}/pred_map2/mul_class/'
         npy4dir = f'{preddir}/pred_map3/mul_class/'
         sum_npy_dir = f'{preddir}/pred_map_ensem/mul_class/'
-        chkdirs(sum_npy_dir)        
+        chkdirs(sum_npy_dir)
         for key in selected_list:
             seq_name = key
             sum_npy_filename = f'{sum_npy_dir}{seq_name}.npy'

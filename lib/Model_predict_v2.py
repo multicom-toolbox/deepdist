@@ -141,7 +141,7 @@ if len(sys.argv) == 10:
     aln_file = os.path.abspath(sys.argv[3])
     CV_dir = [sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]] # ensemble uses four model average
     outdir = os.path.abspath(sys.argv[8])
-    predict_method = str(sys.argv[9])  
+    predict_method = str(sys.argv[9])
 elif len(sys.argv) == 7:
     db_tool_dir = os.path.abspath(sys.argv[1])
     fasta = os.path.abspath(sys.argv[2])
@@ -162,9 +162,9 @@ print(f'Global path: {global_path}')
 path_of_X = outdir
 path_of_Y = outdir
 
-feature_list = 'other' # ['combine', 'combine_all2d', 'other', 'ensemble']  # 'combine' will output three map and combines them, 'other' outputs one pred
+feature_list = 'other' # ['combine', 'combine_all2d', 'other', 'ensemble'] 'combine' will output three map and combines them, 'other' outputs one pred
 data_list_choose = 'test' # ['train', 'test', 'train_sub', 'all']
-maximum_length = 2000  # casp12 700
+maximum_length = 2000 # casp12 700
 dist_string = '80'
 loss_function = 'binary_crossentropy'
 if_use_binsize = False # False True
@@ -290,7 +290,7 @@ for index in range(iter_num):
         chkdirs(model_predict)
         real_dist_dir= f'{model_predict}/real_dist/'
         chkdirs(real_dist_dir)
-    elif 'mul_lable' in  predict_method:
+    elif 'mul_lable' in predict_method:
         real_dist_bin_dir = f'{preddir}/pred_map_real_dist_{index}/'
         mul_class_bin_dir = f'{preddir}/pred_map_mul_class_{index}/'
         real_dist_dir= f'{real_dist_bin_dir}/real_dist/'
@@ -480,7 +480,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         npy3dir = f'{preddir}/pred_map2/mul_class/'
         npy4dir = f'{preddir}/pred_map3/mul_class/'
         sum_npy_dir = f'{preddir}/pred_map_ensem/mul_class/'
-        chkdirs(sum_npy_dir)        
+        chkdirs(sum_npy_dir)
         for key in selected_list:
             seq_name = key
             sum_npy_filename = f'{sum_npy_dir}{seq_name}.npy'
