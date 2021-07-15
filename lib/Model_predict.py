@@ -52,7 +52,7 @@ def getFileName(path, filetype):
             all_file.append(i)
     return all_file
 
-def contact_gen(cmap_dir: str, rr_dir: str, only_predict_flag: bool):
+def contact_gen(cmap_dir: str, rr_dir: str):
     for filename in glob.glob(f'{cmap_dir}/*.txt'):
         id = os.path.basename(filename)
         id = re.sub('\.txt$', '', id)
@@ -66,66 +66,9 @@ def contact_gen(cmap_dir: str, rr_dir: str, only_predict_flag: bool):
         os.system(f'egrep -v \'^>\' {fasta} > {id}.rr')
         os.system(f'cat {id}.raw >> {id}.rr')
         os.system(f'rm -f {id}.raw')
-    if only_predict_flag == False:
-        print('Running CONEVA... May take 1 or 2 minutes\n')
-        emoji_flag = False
-        for key in selected_list:
-            if emoji_flag:
-                emoji_flag=False
-                print('\r', '\\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))  \\(￣︶￣*\\))', end='', flush=True)
-            else:
-                emoji_flag=True
-                print('\r', ' ((/*￣︶￣)/  ((/*￣︶￣)/  ((/*￣︶￣)/  ((/*￣︶￣)/  ((/*￣︶￣)/', end='', flush=True)
-            pdb_name = get_all_file_contain_str(path_of_pdb, key)
-            for i in range(len(pdb_name)):
-                pdb_file = path_of_pdb + pdb_name[i]
-                if os.path.exists(pdb_file):
-                    subprocess.call(f'perl {lib_path}/coneva-lite.pl -rr {rr_dir}/{key}.rr -pdb {pdb_file} >> {rr_dir}/rr.txt', shell=True)
-                else:
-                    print(f'Please check the pdb file: {pdb_file}')
-        title_line = '\nPRECISION                     Top-5     Top-L/10  Top-L/5   Top-L/2   Top-L     Top-2L    '
-        with open(final_acc_reprot, 'a') as myfile:
-            myfile.write(title_line)
-            myfile.write('\n')
-        print(title_line)
-        
-        top5_acc = topL10_acc = topL5_acc = topL2_acc = topL_acc = top2L_acc = 0 
-        count = 0
-        for line in open(f'{rr_dir}/rr.txt', 'r'):
-            line = line.rstrip()
-            if('.pdb (precision)' in line):
-                arr = line.split()
-                print(arr[0])  
-                with open(final_acc_reprot, 'a') as myfile:
-                    myfile.write(arr[0])
-                    myfile.write('\n')
-            if('.rr (precision)' in line):
-                count += 1
-                print(line, end=' ')
-                with open(final_acc_reprot, 'a') as myfile:
-                    myfile.write(line)
-                _array = line.split(' ')
-                array = [x for x in _array if x !='']
-                top5_acc   += float(array[2])
-                topL10_acc += float(array[3])
-                topL5_acc  += float(array[4])
-                topL2_acc  += float(array[5])
-                topL_acc   += float(array[6])
-                top2L_acc  += float(array[7])
-        top5_acc   /= count
-        topL10_acc /= count
-        topL5_acc  /= count
-        topL2_acc  /= count
-        topL_acc   /= count
-        top2L_acc  /= count
-        final_line = f'AVERAGE                       {top5_acc:.2f}     {topL10_acc:.2f}     {topL5_acc:.2f}     {topL2_acc:.2f}     {topL_acc:.2f}     {top2L_acc:.2f}    \n'
-        print(final_line)
-        with open(final_acc_reprot, 'a') as myfile:
-            myfile.write(final_line)
-        os.system('rm -f rr.txt')
-    else:
-        print(f'Final pred_map filepath: {cmap_dir}')
-        print(f'Final rr       filepath: {rr_dir}')
+    
+    print(f'Final pred_map filepath: {cmap_dir}')
+    print(f'Final rr       filepath: {rr_dir}')
 
 class InstanceNormalization(Layer):
     def __init__(self, axis=-1, epsilon=1e-5, **kwargs):
@@ -217,7 +160,6 @@ else:
 
 print(f'Model directory: {CV_dir}')
 print(f'Predict method: {predict_method}')
-only_predict_flag = True # if do not have label set True
 lib_path = sys.path[0]
 global_path = os.path.dirname(sys.path[0])
 print(f'Global path: {global_path}')
@@ -531,7 +473,7 @@ if iter_num == 1: # This is the single model predictor
     rr_dir = f'{cmap_dir}/rr/'
     chkdirs(rr_dir)
     os.chdir(rr_dir)
-    contact_gen(cmap_dir, rr_dir, only_predict_flag)
+    contact_gen(cmap_dir, rr_dir)
 elif iter_num == 4: # This is the multiple model predictor, now with 4 models
     if 'mul_lable' not in predict_method:
         cmap1dir = f'{preddir}/pred_map0/'
@@ -580,7 +522,7 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
     rr_dir = f'{cmap_dir}/rr/'
     chkdirs(rr_dir)
     os.chdir(rr_dir)
-    contact_gen(cmap_dir, rr_dir, only_predict_flag)
+    contact_gen(cmap_dir, rr_dir)
     if 'mul_lable' in predict_method:
         cmap1dir = f'{preddir}/pred_map_mul_class_0/'
         cmap2dir = f'{preddir}/pred_map_mul_class_1/'
@@ -618,6 +560,6 @@ elif iter_num == 4: # This is the multiple model predictor, now with 4 models
         rr_dir = f'{cmap_dir}/rr/'
         chkdirs(rr_dir)
         os.chdir(rr_dir)
-        contact_gen(cmap_dir, rr_dir, only_predict_flag)
+        contact_gen(cmap_dir, rr_dir)
 
 print('DeepDist has finished running\n')
