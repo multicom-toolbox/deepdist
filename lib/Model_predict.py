@@ -367,7 +367,7 @@ for index in range(iter_num):
                 if bool_flag == True:
                     continue
                 else:
-                    DNCON4_prediction_other = DNCON4.predict(pred_temp, batch_size= 1)          
+                    DNCON4_prediction_other = DNCON4.predict(pred_temp, batch_size= 1)
             if predict_method == 'mul_class':
                 DNCON4_prediction_dist = np.copy(DNCON4_prediction_other)
                 DNCON4_prediction_other= DNCON4_prediction_other[:,:,:,0:8].sum(axis=-1)
