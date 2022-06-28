@@ -236,15 +236,10 @@ else:
 
 # gpu_schedul_strategy('local', allow_growth=True)
 
-length = 0
-f = open(fasta, 'r')
-for line in f.readlines():
-    if line.startswith('>'):
-        continue
-    else:
-        length = len(line.strip('\n'))
+length = len(open(fasta, 'r').readlines()[1].strip('\n'))
 if length == 0:
-    print(f'Read fasta: {fasta} length wrong!')
+    print(f'### Read fasta: {fasta} length wrong! ###')
+    sys.exit(1)
 selected_list = {}
 selected_list[target] = length
 
